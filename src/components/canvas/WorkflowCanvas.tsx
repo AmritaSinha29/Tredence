@@ -36,37 +36,29 @@ export const WorkflowCanvas: React.FC = () => {
       event.preventDefault();
       const nodeType = event.dataTransfer.getData('application/reactflow') as WorkflowNodeType;
       if (!nodeType || !reactFlowInstance.current || !reactFlowWrapper.current) return;
-
       const bounds = reactFlowWrapper.current.getBoundingClientRect();
       const position = reactFlowInstance.current.project({
         x: event.clientX - bounds.left,
         y: event.clientY - bounds.top,
       });
-
       addNode(nodeType, position);
     },
     [addNode]
   );
 
-  const onNodeClick = useCallback(
-    (_: React.MouseEvent, node: { id: string }) => {
-      selectNode(node.id);
-    },
-    [selectNode]
-  );
-
-  const onPaneClick = useCallback(() => {
-    selectNode(null);
+  const onNodeClick = useCallback((_: React.MouseEvent, node: { id: string }) => {
+    selectNode(node.id);
   }, [selectNode]);
 
-  // MiniMap node color
+  const onPaneClick = useCallback(() => { selectNode(null); }, [selectNode]);
+
   const nodeColor = (node: { type?: string }) => {
     const type = (node.type || 'task') as WorkflowNodeType;
-    return NODE_VISUALS[type]?.color || '#94a3b8';
+    return NODE_VISUALS[type]?.color || '#6b7280';
   };
 
   return (
-    <div ref={reactFlowWrapper} className="flex-1 h-full">
+    <div ref={reactFlowWrapper} className="flex-1 h-full relative">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -85,20 +77,17 @@ export const WorkflowCanvas: React.FC = () => {
         snapGrid={[16, 16]}
         defaultEdgeOptions={{
           animated: true,
-          style: { stroke: '#a78bfa', strokeWidth: 2 },
+          style: { stroke: '#8b5cf6', strokeWidth: 2 },
         }}
-        className="bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30"
+        style={{ background: 'transparent' }}
       >
-        <Background color="#e2e8f0" gap={20} size={1} />
-        <Controls
-          className="!bg-white/90 !backdrop-blur-sm !border-slate-200 !rounded-xl !shadow-lg"
-        />
+        <Background color="rgba(139, 92, 246, 0.08)" gap={24} size={1} />
+        <Controls />
         <MiniMap
           nodeColor={nodeColor}
           nodeStrokeWidth={2}
           zoomable
           pannable
-          className="!bg-white/90 !backdrop-blur-sm !border-slate-200 !rounded-xl !shadow-lg"
         />
       </ReactFlow>
     </div>

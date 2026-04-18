@@ -30,11 +30,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
   const updateKey = (oldKey: string, newKey: string) => {
     const next: Record<string, string> = {};
     for (const [k, v] of Object.entries(entries)) {
-      if (k === oldKey) {
-        next[newKey] = v;
-      } else {
-        next[k] = v;
-      }
+      next[k === oldKey ? newKey : k] = v;
     }
     onChange(next);
   };
@@ -52,21 +48,22 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
             value={key}
             onChange={(e) => updateKey(key, e.target.value)}
             placeholder={keyPlaceholder}
-            className="flex-1 px-2 py-1.5 text-xs bg-white/80 border border-slate-200 rounded-md
-                       focus:outline-none focus:ring-2 focus:ring-violet-300"
+            className="flex-1 px-2 py-1.5 text-xs bg-white/[0.04] border border-white/[0.08] rounded-md
+                       text-white/80 placeholder:text-white/20
+                       focus:outline-none focus:ring-2 focus:ring-purple-500/25"
           />
           <input
             type="text"
             value={value}
             onChange={(e) => updateValue(key, e.target.value)}
             placeholder={valuePlaceholder}
-            className="flex-1 px-2 py-1.5 text-xs bg-white/80 border border-slate-200 rounded-md
-                       focus:outline-none focus:ring-2 focus:ring-violet-300"
+            className="flex-1 px-2 py-1.5 text-xs bg-white/[0.04] border border-white/[0.08] rounded-md
+                       text-white/80 placeholder:text-white/20
+                       focus:outline-none focus:ring-2 focus:ring-purple-500/25"
           />
           <button
             onClick={() => removePair(key)}
-            className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-            title="Remove"
+            className="p-1 text-pink-400/60 hover:text-pink-400 hover:bg-pink-500/10 rounded transition-colors"
           >
             <X size={14} />
           </button>
@@ -74,7 +71,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
       ))}
       <button
         onClick={addPair}
-        className="flex items-center gap-1 text-xs text-violet-500 hover:text-violet-700 
+        className="flex items-center gap-1 text-xs text-purple-400/70 hover:text-purple-400 
                    transition-colors font-medium mt-1"
       >
         <Plus size={14} />

@@ -1,14 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
-  Undo2,
-  Redo2,
-  Download,
-  Upload,
-  FlaskConical,
-  LayoutGrid,
-  FileJson,
-  Trash2,
-  Workflow,
+  Undo2, Redo2, Download, Upload, FlaskConical, LayoutGrid,
+  FileJson, Trash2, Workflow,
 } from 'lucide-react';
 import { ReactFlowProvider } from 'reactflow';
 import { WorkflowCanvas } from './components/canvas/WorkflowCanvas';
@@ -36,142 +29,92 @@ const App: React.FC = () => {
   const { undo, redo, canUndo, canRedo } = useUndoRedo();
   const { getLayoutedElements } = useAutoLayout();
 
-  const handleExport = () => {
-    const workflow = serialize('My Workflow');
-    exportWorkflowToFile(workflow);
-  };
+  const handleExport = () => exportWorkflowToFile(serialize('My Workflow'));
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const workflow = await importWorkflowFromFile(file);
-    if (workflow) {
-      importWorkflow(workflow);
-    } else {
-      alert('Invalid workflow file');
-    }
+    if (workflow) importWorkflow(workflow);
+    else alert('Invalid workflow file');
     e.target.value = '';
   };
 
   const handleAutoLayout = () => {
     pushSnapshot();
-    const { nodes: layoutedNodes, edges: layoutedEdges } = getLayoutedElements(nodes, edges);
-    importWorkflow({
-      version: '1.0.0',
-      name: '',
-      nodes: layoutedNodes,
-      edges: layoutedEdges,
-      createdAt: '',
-      updatedAt: '',
-    });
+    const { nodes: ln, edges: le } = getLayoutedElements(nodes, edges);
+    importWorkflow({ version: '1.0.0', name: '', nodes: ln, edges: le, createdAt: '', updatedAt: '' });
   };
 
   return (
     <ReactFlowProvider>
-      <div className="h-screen w-screen flex flex-col bg-slate-50 overflow-hidden">
-        {/* Top Header Bar */}
-        <header className="h-14 bg-white/80 backdrop-blur-xl border-b border-slate-200 flex items-center justify-between px-5 flex-shrink-0 z-20">
-          {/* Left: Logo */}
+      <div className="h-screen w-screen flex flex-col bg-app overflow-hidden">
+        {/* ─── Header ──────────────────────────────────────── */}
+        <header className="h-14 glass border-b border-white/[0.06] flex items-center justify-between px-5 flex-shrink-0 z-20 relative">
+          {/* Logo */}
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-400 to-indigo-500 flex items-center justify-center shadow-md">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
+                 style={{ background: 'linear-gradient(135deg, #8b5cf6, #6366f1, #ec4899)' }}>
               <Workflow size={18} className="text-white" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-slate-800 leading-tight">HR Workflow Designer</h1>
-              <p className="text-[10px] text-slate-400">Visual Process Builder</p>
+              <h1 className="text-sm font-bold text-white/90 leading-tight">HR Workflow Designer</h1>
+              <p className="text-[10px] text-white/30">Visual Process Builder</p>
             </div>
           </div>
 
-          {/* Center: Actions */}
-          <div className="flex items-center gap-1">
-            {/* Undo/Redo */}
-            <ToolbarButton icon={<Undo2 size={16} />} label="Undo" onClick={undo} disabled={!canUndo} />
-            <ToolbarButton icon={<Redo2 size={16} />} label="Redo" onClick={redo} disabled={!canRedo} />
-
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            {/* Auto-layout */}
-            <ToolbarButton icon={<LayoutGrid size={16} />} label="Auto Layout" onClick={handleAutoLayout} />
-
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            {/* Export/Import */}
-            <ToolbarButton icon={<Download size={16} />} label="Export JSON" onClick={handleExport} />
-            <ToolbarButton icon={<Upload size={16} />} label="Import JSON" onClick={() => fileInputRef.current?.click()} />
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".json"
-              onChange={handleImport}
-              className="hidden"
-            />
-
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            {/* Templates */}
-            <ToolbarButton
-              icon={<FileJson size={16} />}
-              label="Onboarding"
-              onClick={() => loadTemplate('onboarding')}
-              accent
-            />
-            <ToolbarButton
-              icon={<FileJson size={16} />}
-              label="Leave Approval"
-              onClick={() => loadTemplate('leave-approval')}
-              accent
-            />
-
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            <ToolbarButton
-              icon={<Trash2 size={16} />}
-              label="Clear"
-              onClick={clearWorkflow}
-              danger
-            />
+          {/* Toolbar */}
+          <div className="flex items-center gap-0.5">
+            <ToolbarBtn icon={<Undo2 size={15} />} label="Undo" onClick={undo} disabled={!canUndo} />
+            <ToolbarBtn icon={<Redo2 size={15} />} label="Redo" onClick={redo} disabled={!canRedo} />
+            <Divider />
+            <ToolbarBtn icon={<LayoutGrid size={15} />} label="Auto Layout" onClick={handleAutoLayout} />
+            <Divider />
+            <ToolbarBtn icon={<Download size={15} />} label="Export" onClick={handleExport} />
+            <ToolbarBtn icon={<Upload size={15} />} label="Import" onClick={() => fileInputRef.current?.click()} />
+            <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
+            <Divider />
+            <ToolbarBtn icon={<FileJson size={15} />} label="Onboarding" onClick={() => loadTemplate('onboarding')} accent />
+            <ToolbarBtn icon={<FileJson size={15} />} label="Leave" onClick={() => loadTemplate('leave-approval')} accent />
+            <Divider />
+            <ToolbarBtn icon={<Trash2 size={15} />} label="Clear" onClick={clearWorkflow} danger />
           </div>
 
-          {/* Right: Sandbox */}
-          <button
-            onClick={() => setSandboxOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-violet-500 to-indigo-500 
-                       text-white rounded-xl hover:from-violet-600 hover:to-indigo-600 
-                       transition-all duration-200 shadow-md hover:shadow-lg text-sm font-semibold"
-          >
+          {/* Test Button */}
+          <button onClick={() => setSandboxOpen(true)}
+            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white
+                       transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #6366f1, #ec4899)',
+              boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)',
+            }}>
             <FlaskConical size={16} />
             Test Workflow
           </button>
         </header>
 
-        {/* Main Content */}
-        <div className="flex flex-1 overflow-hidden">
-          {/* Left Sidebar */}
-          <aside className="w-56 bg-white/60 backdrop-blur-xl border-r border-slate-200 p-4 overflow-y-auto flex-shrink-0">
+        {/* ─── Main Layout ─────────────────────────────────── */}
+        <div className="flex flex-1 overflow-hidden relative">
+          {/* Sidebar */}
+          <aside className="w-52 glass border-r border-white/[0.06] p-4 overflow-y-auto flex-shrink-0 relative z-10">
             <NodePalette />
 
-            {/* Stats */}
-            <div className="mt-6 pt-4 border-t border-slate-100">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1 mb-2">
-                Stats
-              </h3>
+            <div className="mt-6 pt-4 border-t border-white/[0.06]">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 px-1 mb-2">Stats</h3>
               <div className="space-y-1.5">
                 <StatRow label="Nodes" value={nodes.length} />
                 <StatRow label="Edges" value={edges.length} />
               </div>
             </div>
 
-            {/* Instructions */}
-            <div className="mt-6 pt-4 border-t border-slate-100">
-              <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-400 px-1 mb-2">
-                Quick Tips
-              </h3>
-              <div className="space-y-1 text-[10px] text-slate-400">
-                <p>• Drag nodes onto the canvas</p>
-                <p>• Connect nodes by dragging handles</p>
-                <p>• Click a node to edit it</p>
-                <p>• Delete with Backspace/Delete</p>
-                <p>• Ctrl+Z to undo</p>
+            <div className="mt-6 pt-4 border-t border-white/[0.06]">
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 px-1 mb-2">Tips</h3>
+              <div className="space-y-1 text-[10px] text-white/20">
+                <p>• Drag nodes onto canvas</p>
+                <p>• Drag handles to connect</p>
+                <p>• Click node to configure</p>
+                <p>• Backspace to delete</p>
+                <p>• Ctrl+Z / Ctrl+Y</p>
               </div>
             </div>
           </aside>
@@ -179,53 +122,39 @@ const App: React.FC = () => {
           {/* Canvas */}
           <WorkflowCanvas />
 
-          {/* Right Panel — Node Editor */}
+          {/* Form Panel */}
           {selectedNodeId && <NodeFormPanel />}
         </div>
 
-        {/* Sandbox Modal */}
+        {/* Sandbox */}
         <SandboxPanel isOpen={sandboxOpen} onClose={() => setSandboxOpen(false)} />
       </div>
     </ReactFlowProvider>
   );
 };
 
-// ─── Toolbar Button Component ─────────────────────────────
-interface ToolbarButtonProps {
-  icon: React.ReactNode;
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-  accent?: boolean;
-  danger?: boolean;
-}
-
-const ToolbarButton: React.FC<ToolbarButtonProps> = ({ icon, label, onClick, disabled, accent, danger }) => (
-  <button
-    onClick={onClick}
-    disabled={disabled}
-    title={label}
-    className={`
-      flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150
-      disabled:opacity-30 disabled:cursor-not-allowed
-      ${danger
-        ? 'text-red-500 hover:bg-red-50 hover:text-red-600'
-        : accent
-          ? 'text-violet-600 hover:bg-violet-50'
-          : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'
-      }
-    `}
-  >
+/* ─── Sub-components ───────────────────────────────────── */
+const ToolbarBtn: React.FC<{
+  icon: React.ReactNode; label: string; onClick: () => void;
+  disabled?: boolean; accent?: boolean; danger?: boolean;
+}> = ({ icon, label, onClick, disabled, accent, danger }) => (
+  <button onClick={onClick} disabled={disabled} title={label}
+    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150
+      disabled:opacity-20 disabled:cursor-not-allowed
+      ${danger ? 'text-red-400/70 hover:bg-red-500/10 hover:text-red-400'
+        : accent ? 'text-purple-400/70 hover:bg-purple-500/10 hover:text-purple-400'
+          : 'text-white/40 hover:bg-white/[0.06] hover:text-white/70'}`}>
     {icon}
     <span className="hidden xl:inline">{label}</span>
   </button>
 );
 
-// ─── Stat Row ─────────────────────────────────────────────
+const Divider = () => <div className="w-px h-5 bg-white/[0.06] mx-1" />;
+
 const StatRow: React.FC<{ label: string; value: number }> = ({ label, value }) => (
-  <div className="flex items-center justify-between px-2 py-1 rounded-md bg-slate-50">
-    <span className="text-[10px] text-slate-500">{label}</span>
-    <span className="text-xs font-bold text-slate-700">{value}</span>
+  <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-white/[0.03]">
+    <span className="text-[10px] text-white/30">{label}</span>
+    <span className="text-xs font-bold text-white/60">{value}</span>
   </div>
 );
 

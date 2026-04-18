@@ -31,7 +31,7 @@ export const EndNodeForm: React.FC<EndNodeFormProps> = ({ data, onChange }) => {
             />
             <div
               className={`w-10 h-5 rounded-full transition-colors duration-200 ${
-                data.showSummary ? 'bg-violet-400' : 'bg-slate-200'
+                data.showSummary ? 'bg-purple-500' : 'bg-white/10'
               }`}
             />
             <div
@@ -40,7 +40,7 @@ export const EndNodeForm: React.FC<EndNodeFormProps> = ({ data, onChange }) => {
               }`}
             />
           </div>
-          <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+          <span className="text-[13px] text-white/50 group-hover:text-white/70 transition-colors">
             {data.showSummary ? 'Summary will be displayed' : 'No summary'}
           </span>
         </label>
