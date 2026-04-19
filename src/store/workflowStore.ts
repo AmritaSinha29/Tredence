@@ -55,7 +55,7 @@ interface WorkflowState {
   clearWorkflow: () => void;
 
   // Templates
-  loadTemplate: (template: 'onboarding' | 'leave-approval') => void;
+  loadTemplate: (template: 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review') => void;
 
   // Helpers
   getSelectedNode: () => WorkflowNode | undefined;
@@ -264,6 +264,70 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
         { id: 'la_e4', source: 'la_approval2', target: 'la_auto1', animated: true, style: { stroke: '#a78bfa', strokeWidth: 2 } },
         { id: 'la_e5', source: 'la_auto1', target: 'la_auto2', animated: true, style: { stroke: '#a78bfa', strokeWidth: 2 } },
         { id: 'la_e6', source: 'la_auto2', target: 'la_end', animated: true, style: { stroke: '#a78bfa', strokeWidth: 2 } },
+      ];
+      set({ nodes, edges, selectedNodeId: null, redoStack: [] });
+    }
+
+    if (template === 'doc-verification') {
+      const edgeStyle = { stroke: '#7c6cf0', strokeWidth: 2 };
+      const nodes: WorkflowNode[] = [
+        { id: 'dv_start', type: 'start', position: { x: 250, y: 0 }, data: { type: 'start', label: 'Start', title: 'Document Verification', metadata: { process: 'compliance' } } },
+        { id: 'dv_auto1', type: 'automated', position: { x: 250, y: 120 }, data: { type: 'automated', label: 'Automated Step', title: 'OCR Scan', actionId: 'generate_report', actionParams: { format: 'pdf' } } },
+        { id: 'dv_task1', type: 'task', position: { x: 250, y: 240 }, data: { type: 'task', label: 'Task', title: 'Manual Review', description: 'Review flagged documents', assignee: 'Compliance Officer', dueDate: '', customFields: {} } },
+        { id: 'dv_approval1', type: 'approval', position: { x: 250, y: 360 }, data: { type: 'approval', label: 'Approval', title: 'Compliance Sign-off', approverRole: 'Director', autoApproveThreshold: 0 } },
+        { id: 'dv_end', type: 'end', position: { x: 250, y: 480 }, data: { type: 'end', label: 'End', endMessage: 'Verification Complete', showSummary: true } },
+      ];
+      const edges: WorkflowEdge[] = [
+        { id: 'dv_e1', source: 'dv_start', target: 'dv_auto1', animated: true, style: edgeStyle },
+        { id: 'dv_e2', source: 'dv_auto1', target: 'dv_task1', animated: true, style: edgeStyle },
+        { id: 'dv_e3', source: 'dv_task1', target: 'dv_approval1', animated: true, style: edgeStyle },
+        { id: 'dv_e4', source: 'dv_approval1', target: 'dv_end', animated: true, style: edgeStyle },
+      ];
+      set({ nodes, edges, selectedNodeId: null, redoStack: [] });
+    }
+
+    if (template === 'exit-process') {
+      const edgeStyle = { stroke: '#7c6cf0', strokeWidth: 2 };
+      const nodes: WorkflowNode[] = [
+        { id: 'ex_start', type: 'start', position: { x: 250, y: 0 }, data: { type: 'start', label: 'Start', title: 'Exit Process', metadata: { type: 'offboarding' } } },
+        { id: 'ex_task1', type: 'task', position: { x: 250, y: 120 }, data: { type: 'task', label: 'Task', title: 'Asset Return', description: 'Return laptop, ID card, and access keys', assignee: 'IT Admin', dueDate: '', customFields: {} } },
+        { id: 'ex_task2', type: 'task', position: { x: 250, y: 240 }, data: { type: 'task', label: 'Task', title: 'Knowledge Transfer', description: 'Document ongoing projects and hand over', assignee: 'Team Lead', dueDate: '', customFields: {} } },
+        { id: 'ex_task3', type: 'task', position: { x: 250, y: 360 }, data: { type: 'task', label: 'Task', title: 'Exit Interview', description: 'Conduct exit interview', assignee: 'HRBP', dueDate: '', customFields: {} } },
+        { id: 'ex_approval1', type: 'approval', position: { x: 250, y: 480 }, data: { type: 'approval', label: 'Approval', title: 'HR Sign-off', approverRole: 'HRBP', autoApproveThreshold: 0 } },
+        { id: 'ex_auto1', type: 'automated', position: { x: 250, y: 600 }, data: { type: 'automated', label: 'Automated Step', title: 'Final Settlement', actionId: 'update_record', actionParams: { type: 'settlement' } } },
+        { id: 'ex_auto2', type: 'automated', position: { x: 250, y: 720 }, data: { type: 'automated', label: 'Automated Step', title: 'Revoke Access', actionId: 'send_email', actionParams: { to: 'IT', subject: 'Revoke access' } } },
+        { id: 'ex_end', type: 'end', position: { x: 250, y: 840 }, data: { type: 'end', label: 'End', endMessage: 'Exit Complete', showSummary: true } },
+      ];
+      const edges: WorkflowEdge[] = [
+        { id: 'ex_e1', source: 'ex_start', target: 'ex_task1', animated: true, style: edgeStyle },
+        { id: 'ex_e2', source: 'ex_task1', target: 'ex_task2', animated: true, style: edgeStyle },
+        { id: 'ex_e3', source: 'ex_task2', target: 'ex_task3', animated: true, style: edgeStyle },
+        { id: 'ex_e4', source: 'ex_task3', target: 'ex_approval1', animated: true, style: edgeStyle },
+        { id: 'ex_e5', source: 'ex_approval1', target: 'ex_auto1', animated: true, style: edgeStyle },
+        { id: 'ex_e6', source: 'ex_auto1', target: 'ex_auto2', animated: true, style: edgeStyle },
+        { id: 'ex_e7', source: 'ex_auto2', target: 'ex_end', animated: true, style: edgeStyle },
+      ];
+      set({ nodes, edges, selectedNodeId: null, redoStack: [] });
+    }
+
+    if (template === 'performance-review') {
+      const edgeStyle = { stroke: '#7c6cf0', strokeWidth: 2 };
+      const nodes: WorkflowNode[] = [
+        { id: 'pr_start', type: 'start', position: { x: 250, y: 0 }, data: { type: 'start', label: 'Start', title: 'Performance Review', metadata: { cycle: 'Annual' } } },
+        { id: 'pr_task1', type: 'task', position: { x: 250, y: 120 }, data: { type: 'task', label: 'Task', title: 'Self Assessment', description: 'Employee fills self-evaluation form', assignee: 'Employee', dueDate: '', customFields: {} } },
+        { id: 'pr_task2', type: 'task', position: { x: 250, y: 240 }, data: { type: 'task', label: 'Task', title: 'Peer Feedback', description: 'Collect 360-degree feedback from peers', assignee: 'Peers', dueDate: '', customFields: {} } },
+        { id: 'pr_approval1', type: 'approval', position: { x: 250, y: 360 }, data: { type: 'approval', label: 'Approval', title: 'Manager Rating', approverRole: 'Manager', autoApproveThreshold: 0 } },
+        { id: 'pr_approval2', type: 'approval', position: { x: 250, y: 480 }, data: { type: 'approval', label: 'Approval', title: 'Calibration', approverRole: 'Director', autoApproveThreshold: 0 } },
+        { id: 'pr_auto1', type: 'automated', position: { x: 250, y: 600 }, data: { type: 'automated', label: 'Automated Step', title: 'Generate Report', actionId: 'generate_report', actionParams: { format: 'pdf' } } },
+        { id: 'pr_end', type: 'end', position: { x: 250, y: 720 }, data: { type: 'end', label: 'End', endMessage: 'Review Finalized', showSummary: true } },
+      ];
+      const edges: WorkflowEdge[] = [
+        { id: 'pr_e1', source: 'pr_start', target: 'pr_task1', animated: true, style: edgeStyle },
+        { id: 'pr_e2', source: 'pr_task1', target: 'pr_task2', animated: true, style: edgeStyle },
+        { id: 'pr_e3', source: 'pr_task2', target: 'pr_approval1', animated: true, style: edgeStyle },
+        { id: 'pr_e4', source: 'pr_approval1', target: 'pr_approval2', animated: true, style: edgeStyle },
+        { id: 'pr_e5', source: 'pr_approval2', target: 'pr_auto1', animated: true, style: edgeStyle },
+        { id: 'pr_e6', source: 'pr_auto1', target: 'pr_end', animated: true, style: edgeStyle },
       ];
       set({ nodes, edges, selectedNodeId: null, redoStack: [] });
     }

@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
-  Play, ClipboardList, UserCheck, Zap, Square,
   ArrowRight, Users, CalendarDays, FileCheck, LogOut, Award,
 } from 'lucide-react';
 import { useWorkflowStore } from '../store/workflowStore';
 
+type TemplateId = 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review';
+
 interface Template {
-  id: 'onboarding' | 'leave-approval';
+  id: TemplateId;
   name: string;
   description: string;
   icon: React.ReactNode;
@@ -42,47 +43,44 @@ const TEMPLATES: Template[] = [
   },
 ];
 
-// Additional showcase templates (visual only)
-const SHOWCASE = [
+const MORE_TEMPLATES: Template[] = [
   {
+    id: 'doc-verification',
     name: 'Document Verification',
     description: 'Automated document authenticity checks with OCR processing and compliance validation.',
     icon: <FileCheck size={22} />,
     iconColor: '#e89e1c', iconBg: '#fef8eb',
+    nodes: 5, edges: 4,
     tags: ['Compliance', 'Documents'],
-    nodeTypes: ['Start', 'Automated', 'Approval', 'Task', 'End'],
+    steps: ['OCR Scan', 'Manual Review', 'Compliance Sign-off', 'Complete'],
   },
   {
+    id: 'exit-process',
     name: 'Exit Process',
     description: 'Structured offboarding covering asset return, knowledge transfer, exit interviews, and final settlements.',
     icon: <LogOut size={22} />,
     iconColor: '#e04e5e', iconBg: '#fef0f1',
+    nodes: 8, edges: 7,
     tags: ['HR', 'Offboarding'],
-    nodeTypes: ['Start', 'Task', 'Task', 'Approval', 'Automated', 'End'],
+    steps: ['Asset Return', 'Knowledge Transfer', 'Exit Interview', 'HR Sign-off', 'Settlement', 'Complete'],
   },
   {
+    id: 'performance-review',
     name: 'Performance Review',
     description: 'Annual performance cycle with self-assessment, peer feedback, calibration, and rating finalization.',
     icon: <Award size={22} />,
     iconColor: '#7c6cf0', iconBg: '#f5f3fe',
+    nodes: 7, edges: 6,
     tags: ['HR', 'Performance'],
-    nodeTypes: ['Start', 'Task', 'Task', 'Approval', 'Automated', 'End'],
+    steps: ['Self Assessment', 'Peer Feedback', 'Manager Rating', 'Calibration', 'Generate Report', 'Complete'],
   },
 ];
-
-const NODE_ICONS: Record<string, { icon: React.ReactNode; color: string }> = {
-  Start: { icon: <Play size={10} />, color: '#22a86b' },
-  Task: { icon: <ClipboardList size={10} />, color: '#4a8ff7' },
-  Approval: { icon: <UserCheck size={10} />, color: '#e89e1c' },
-  Automated: { icon: <Zap size={10} />, color: '#7c6cf0' },
-  End: { icon: <Square size={10} />, color: '#e04e5e' },
-};
 
 export const TemplatesPage: React.FC = () => {
   const navigate = useNavigate();
   const loadTemplate = useWorkflowStore((s) => s.loadTemplate);
 
-  const handleUse = (id: 'onboarding' | 'leave-approval') => {
+  const handleUse = (id: TemplateId) => {
     loadTemplate(id);
     navigate('/designer');
   };
@@ -149,22 +147,22 @@ export const TemplatesPage: React.FC = () => {
           ))}
         </div>
 
-        {/* Showcase */}
+        {/* More Templates */}
         <h3 className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8e90a6] mb-3">
-          More Examples
+          More Templates
         </h3>
         <div className="grid grid-cols-3 gap-4">
-          {SHOWCASE.map((s) => (
-            <div key={s.name} className="bg-white rounded-xl border border-[#e2e4ef] shadow-sm p-4 hover:shadow-md transition-shadow">
+          {MORE_TEMPLATES.map((t) => (
+            <div key={t.id} className="bg-white rounded-xl border border-[#e2e4ef] shadow-sm p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-9 h-9 rounded-lg flex items-center justify-center"
-                     style={{ backgroundColor: s.iconBg, color: s.iconColor }}>
-                  {s.icon}
+                     style={{ backgroundColor: t.iconBg, color: t.iconColor }}>
+                  {t.icon}
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-[#1e1f2e]">{s.name}</h4>
+                  <h4 className="text-sm font-bold text-[#1e1f2e]">{t.name}</h4>
                   <div className="flex gap-1 mt-0.5">
-                    {s.tags.map((tag) => (
+                    {t.tags.map((tag) => (
                       <span key={tag} className="text-[9px] font-medium px-1.5 py-0.5 rounded-full bg-[#f5f6fa] text-[#8e90a6]">
                         {tag}
                       </span>
@@ -172,24 +170,21 @@ export const TemplatesPage: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <p className="text-[11px] text-[#5a5c78] leading-relaxed mb-3">{s.description}</p>
-              <div className="flex items-center gap-1">
-                {s.nodeTypes.map((type, i) => {
-                  const cfg = NODE_ICONS[type];
-                  return (
-                    <React.Fragment key={i}>
-                      <div className="w-5 h-5 rounded flex items-center justify-center" style={{ backgroundColor: cfg.color + '14', color: cfg.color }}>
-                        {cfg.icon}
-                      </div>
-                      {i < s.nodeTypes.length - 1 && <div className="w-3 h-px bg-[#e2e4ef]" />}
-                    </React.Fragment>
-                  );
-                })}
+              <p className="text-[11px] text-[#5a5c78] leading-relaxed mb-3">{t.description}</p>
+              <div className="flex items-center gap-1 mb-3 flex-wrap">
+                {t.steps.map((step, i) => (
+                  <React.Fragment key={step}>
+                    <span className="text-[9px] font-medium text-[#5a5c78] bg-[#f8f9fc] px-1.5 py-0.5 rounded border border-[#e2e4ef]">{step}</span>
+                    {i < t.steps.length - 1 && <ArrowRight size={8} className="text-[#d0d3e4]" />}
+                  </React.Fragment>
+                ))}
               </div>
-              <div className="mt-3 pt-3 border-t border-[#e2e4ef]">
-                <Link to="/designer" className="text-xs text-[#7c6cf0] font-medium hover:underline flex items-center gap-1">
-                  Open in Designer <ArrowRight size={11} />
-                </Link>
+              <div className="flex items-center justify-between pt-3 border-t border-[#e2e4ef]">
+                <span className="text-[10px] text-[#b4b6c8]">{t.nodes} nodes</span>
+                <button onClick={() => handleUse(t.id)}
+                  className="text-xs text-[#7c6cf0] font-medium hover:underline flex items-center gap-1">
+                  Use Template <ArrowRight size={11} />
+                </button>
               </div>
             </div>
           ))}
