@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, ClipboardList, UserCheck, Zap, Square, GripVertical } from 'lucide-react';
+import { Play, ClipboardList, UserCheck, Zap, Square, Split, GripVertical } from 'lucide-react';
 import { type WorkflowNodeType, NODE_VISUALS } from '../../types';
 
 interface PaletteItem {
@@ -13,6 +13,7 @@ const ITEMS: PaletteItem[] = [
   { type: 'task', icon: <ClipboardList size={15} />, desc: 'Human task' },
   { type: 'approval', icon: <UserCheck size={15} />, desc: 'Approval gate' },
   { type: 'automated', icon: <Zap size={15} />, desc: 'System action' },
+  { type: 'condition', icon: <Split size={15} />, desc: 'Branching logic' },
   { type: 'end', icon: <Square size={15} />, desc: 'Completion' },
 ];
 

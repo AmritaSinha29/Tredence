@@ -1,7 +1,7 @@
 import { type Node, type Edge } from 'reactflow';
 
 // ─── Node Types ───────────────────────────────────────────
-export type WorkflowNodeType = 'start' | 'task' | 'approval' | 'automated' | 'end';
+export type WorkflowNodeType = 'start' | 'task' | 'approval' | 'automated' | 'condition' | 'end';
 
 // ─── Per-Type Data Interfaces ─────────────────────────────
 export interface StartNodeData {
@@ -44,12 +44,22 @@ export interface EndNodeData {
   showSummary: boolean;
 }
 
+export interface ConditionNodeData {
+  type: 'condition';
+  label: string;
+  title: string;
+  variable: string;
+  operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains';
+  value: string;
+}
+
 // ─── Discriminated Union ──────────────────────────────────
 export type WorkflowNodeData =
   | StartNodeData
   | TaskNodeData
   | ApprovalNodeData
   | AutomatedStepNodeData
+  | ConditionNodeData
   | EndNodeData;
 
 // ─── React Flow Node with typed data ──────────────────────
@@ -110,6 +120,14 @@ export const NODE_DEFAULTS: Record<WorkflowNodeType, () => WorkflowNodeData> = {
     actionId: '',
     actionParams: {},
   }),
+  condition: () => ({
+    type: 'condition',
+    label: 'Condition',
+    title: '',
+    variable: '',
+    operator: 'equals',
+    value: '',
+  }),
   end: () => ({
     type: 'end',
     label: 'End',
@@ -155,6 +173,13 @@ export const NODE_VISUALS: Record<WorkflowNodeType, NodeVisualConfig> = {
     borderColor: '#FCDCCF',
     icon: 'Zap',
     label: 'Automated',
+  },
+  condition: {
+    color: '#8e90a6',
+    bgColor: '#f5f6fa',
+    borderColor: '#e2e4ef',
+    icon: 'Split',
+    label: 'Condition',
   },
   end: {
     color: '#e04e5e',

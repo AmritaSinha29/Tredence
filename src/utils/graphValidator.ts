@@ -56,6 +56,21 @@ export function validateWorkflow(
     }
   });
 
+  // 4b. Condition node must have exactly two outgoing edges (true and false)
+  nodes.filter((n) => n.data.type === 'condition').forEach((cn) => {
+    const outgoingEdges = edges.filter((e) => e.source === cn.id);
+    const hasTrue = outgoingEdges.some((e) => e.sourceHandle === 'true');
+    const hasFalse = outgoingEdges.some((e) => e.sourceHandle === 'false');
+    
+    if (!hasTrue || !hasFalse) {
+      errors.push({
+        nodeId: cn.id,
+        type: 'error',
+        message: 'Condition node must have both TRUE and FALSE outgoing connections.',
+      });
+    }
+  });
+
   // 5. Check for disconnected nodes (no edges at all)
   nodes.forEach((node) => {
     const hasEdge = edges.some((e) => e.source === node.id || e.target === node.id);
@@ -102,6 +117,15 @@ export function validateWorkflow(
             nodeId: node.id,
             type: 'warning',
             message: 'Automated step has no action selected.',
+          });
+        }
+        break;
+      case 'condition':
+        if (!data.variable || !data.value) {
+          errors.push({
+            nodeId: node.id,
+            type: 'error',
+            message: 'Condition node requires a variable and target value.',
           });
         }
         break;

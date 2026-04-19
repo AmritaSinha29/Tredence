@@ -4,6 +4,7 @@ import TaskNode from './TaskNode';
 import ApprovalNode from './ApprovalNode';
 import AutomatedStepNode from './AutomatedStepNode';
 import EndNode from './EndNode';
+import ConditionNode from './ConditionNode';
 
 /**
  * Registry pattern: maps node type strings to React components.
@@ -14,5 +15,6 @@ export const nodeTypes: NodeTypes = {
   task: TaskNode,
   approval: ApprovalNode,
   automated: AutomatedStepNode,
+  condition: ConditionNode,
   end: EndNode,
 };

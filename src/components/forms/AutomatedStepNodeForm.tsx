@@ -38,7 +38,7 @@ export const AutomatedStepNodeForm: React.FC<Props> = ({ data, onChange }) => {
         )}
       </FormField>
       {selected && selected.params.length > 0 && (
-        <div className="p-3 rounded-md border border-[#C5D9E0] bg-[#f9f8fe]">
+        <div className="p-3 rounded-md border border-[#C5D9E0] bg-[#F2F6F8]">
           <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0F3D4C] mb-3">
             Action Parameters
           </p>

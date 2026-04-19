@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Workflow, Plus, FileJson, BarChart3,
-  ArrowRight, Play, ClipboardList, UserCheck, Zap, Square,
+  ArrowRight, Play, ClipboardList, UserCheck, Zap, Square, Split,
   Layers, Activity, CheckCircle, FileEdit,
 } from 'lucide-react';
 import { useWorkflowStore } from '../store/workflowStore';
@@ -103,6 +103,7 @@ export const DashboardPage: React.FC = () => {
                   { icon: ClipboardList, label: 'Task', desc: 'Human task', color: '#4a8ff7', bg: '#f0f5ff' },
                   { icon: UserCheck, label: 'Approval', desc: 'Gate check', color: '#e89e1c', bg: '#fef8eb' },
                   { icon: Zap, label: 'Automated', desc: 'System action', color: '#F36633', bg: '#FFF5F0' },
+                  { icon: Split, label: 'Condition', desc: 'Branching logic', color: '#8e90a6', bg: '#f5f6fa' },
                   { icon: Square, label: 'End', desc: 'Completion', color: '#e04e5e', bg: '#fef0f1' },
                 ].map((n) => (
                   <div key={n.label} className="flex items-center gap-2.5 px-3 py-2 rounded-md"

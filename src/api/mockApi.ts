@@ -20,8 +20,8 @@ export async function fetchAutomations(): Promise<AutomationAction[]> {
 
 // ─── POST /api/simulate ───────────────────────────────────
 export async function simulateWorkflow(workflow: {
-  nodes: Array<{ id: string; type?: string; data: { type: string; title?: string; label?: string; actionId?: string; approverRole?: string; endMessage?: string; showSummary?: boolean } }>;
-  edges: Array<{ source: string; target: string }>;
+  nodes: Array<{ id: string; type?: string; data: any }>;
+  edges: Array<{ source: string; target: string; sourceHandle?: string | null }>;
 }): Promise<SimulationResult> {
   // Simulate network latency
   await new Promise((r) => setTimeout(r, 800));
@@ -31,11 +31,11 @@ export async function simulateWorkflow(workflow: {
   const startTime = Date.now();
 
   // Build adjacency for traversal
-  const adjacency = new Map<string, string[]>();
+  const adjacency = new Map<string, Array<{ target: string; handle: string | null }>>();
   nodes.forEach((n) => adjacency.set(n.id, []));
   edges.forEach((e) => {
     const list = adjacency.get(e.source);
-    if (list) list.push(e.target);
+    if (list) list.push({ target: e.target, handle: e.sourceHandle || null });
   });
 
   // Find start node
@@ -95,11 +95,24 @@ export async function simulateWorkflow(workflow: {
     steps.push(step);
     stepIndex++;
 
-    // Add neighbors to queue
-    const neighbors = adjacency.get(currentId) || [];
-    neighbors.forEach((n) => {
-      if (!visited.has(n)) queue.push(n);
-    });
+    // Handle Conditional Branching
+    if (node.data.type === 'condition') {
+      const isTrue = Math.random() > 0.5; // Simulate 50/50 split
+      step.message = `Condition "${node.data.variable} ${node.data.operator} ${node.data.value}" evaluated to ${isTrue ? 'TRUE' : 'FALSE'}`;
+      
+      const neighbors = adjacency.get(currentId) || [];
+      const chosenBranch = neighbors.find((n) => n.handle === (isTrue ? 'true' : 'false'));
+      
+      if (chosenBranch && !visited.has(chosenBranch.target)) {
+        queue.push(chosenBranch.target);
+      }
+    } else {
+      // Normal node: enqueue all neighbors
+      const neighbors = adjacency.get(currentId) || [];
+      neighbors.forEach((n) => {
+        if (!visited.has(n.target)) queue.push(n.target);
+      });
+    }
   }
 
   return {
@@ -123,6 +136,8 @@ function getStepMessage(data: { type: string; title?: string; actionId?: string;
       return `Approved by ${data.approverRole || 'approver'}`;
     case 'automated':
       return `Automation "${data.actionId || 'action'}" executed successfully`;
+    case 'condition':
+      return `Condition evaluated`;
     case 'end':
       return data.endMessage || 'Workflow completed';
     default:

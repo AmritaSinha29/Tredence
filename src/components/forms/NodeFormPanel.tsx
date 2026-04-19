@@ -1,16 +1,17 @@
 import React from 'react';
-import { X, Play, ClipboardList, UserCheck, Zap, Square } from 'lucide-react';
+import { X, Play, ClipboardList, UserCheck, Zap, Square, Split } from 'lucide-react';
 import { useWorkflowStore } from '../../store/workflowStore';
 import { type WorkflowNodeData, NODE_VISUALS } from '../../types';
 import { StartNodeForm } from './StartNodeForm';
 import { TaskNodeForm } from './TaskNodeForm';
 import { ApprovalNodeForm } from './ApprovalNodeForm';
 import { AutomatedStepNodeForm } from './AutomatedStepNodeForm';
+import { ConditionNodeForm } from './ConditionNodeForm';
 import { EndNodeForm } from './EndNodeForm';
 
 const ICONS = {
   start: <Play size={18} />, task: <ClipboardList size={18} />,
-  approval: <UserCheck size={18} />, automated: <Zap size={18} />, end: <Square size={18} />,
+  approval: <UserCheck size={18} />, automated: <Zap size={18} />, condition: <Split size={18} />, end: <Square size={18} />,
 };
 
 export const NodeFormPanel: React.FC = () => {
@@ -37,6 +38,7 @@ export const NodeFormPanel: React.FC = () => {
       case 'task': return <TaskNodeForm data={data} onChange={handleChange} />;
       case 'approval': return <ApprovalNodeForm data={data} onChange={handleChange} />;
       case 'automated': return <AutomatedStepNodeForm data={data} onChange={handleChange} />;
+      case 'condition': return <ConditionNodeForm data={data} onChange={handleChange} />;
       case 'end': return <EndNodeForm data={data} onChange={handleChange} />;
     }
   };
