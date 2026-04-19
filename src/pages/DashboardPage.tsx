@@ -19,7 +19,13 @@ export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const loadTemplate = useWorkflowStore((s) => s.loadTemplate);
   const workflows = useCatalogStore((s) => s.workflows);
-  const stats = useCatalogStore((s) => s.getStats());
+  
+  const stats = {
+    active: workflows.filter(w => w.status === 'active').length,
+    completed: workflows.filter(w => w.status === 'completed').length,
+    drafts: workflows.filter(w => w.status === 'draft').length,
+    total: workflows.length
+  };
 
   const recentWorkflows = workflows.slice(0, 6);
   const currentStats = STATS(stats);

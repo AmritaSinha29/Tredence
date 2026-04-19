@@ -52,10 +52,9 @@ interface CatalogState {
   addWorkflow: (wf: Omit<SavedWorkflow, 'id' | 'updatedAt' | 'createdBy' | 'department'>) => void;
   updateWorkflowStatus: (id: string, status: WorkflowStatus) => void;
   deleteWorkflow: (id: string) => void;
-  getStats: () => { active: number; completed: number; drafts: number; total: number };
 }
 
-export const useCatalogStore = create<CatalogState>((set, get) => ({
+export const useCatalogStore = create<CatalogState>((set) => ({
   workflows: INITIAL_WORKFLOWS,
   
   addWorkflow: (wf) => {
@@ -84,15 +83,5 @@ export const useCatalogStore = create<CatalogState>((set, get) => ({
     set((state) => ({
       workflows: state.workflows.filter(wf => wf.id !== id)
     }));
-  },
-
-  getStats: () => {
-    const { workflows } = get();
-    return {
-      active: workflows.filter((w) => w.status === 'active').length,
-      completed: workflows.filter((w) => w.status === 'completed').length,
-      drafts: workflows.filter((w) => w.status === 'draft').length,
-      total: workflows.length,
-    };
   }
 }));

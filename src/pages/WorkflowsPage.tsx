@@ -26,9 +26,15 @@ export const WorkflowsPage: React.FC = () => {
   const [search, setSearch] = useState('');
   const loadTemplate = useWorkflowStore((s) => s.loadTemplate);
   const workflows = useCatalogStore((s) => s.workflows);
-  const stats = useCatalogStore((s) => s.getStats());
   const updateStatus = useCatalogStore((s) => s.updateWorkflowStatus);
   const deleteWorkflow = useCatalogStore((s) => s.deleteWorkflow);
+
+  const stats = {
+    active: workflows.filter(w => w.status === 'active').length,
+    completed: workflows.filter(w => w.status === 'completed').length,
+    drafts: workflows.filter(w => w.status === 'draft').length,
+    total: workflows.length
+  };
 
   const getTabCount = (key: WorkflowStatus | 'all') => {
     if (key === 'all') return stats.total;
