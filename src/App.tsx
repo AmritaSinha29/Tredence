@@ -34,9 +34,8 @@ const App: React.FC = () => {
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const workflow = await importWorkflowFromFile(file);
-    if (workflow) importWorkflow(workflow);
-    else alert('Invalid workflow file');
+    const wf = await importWorkflowFromFile(file);
+    if (wf) importWorkflow(wf); else alert('Invalid workflow file.');
     e.target.value = '';
   };
 
@@ -48,73 +47,77 @@ const App: React.FC = () => {
 
   return (
     <ReactFlowProvider>
-      <div className="h-screen w-screen flex flex-col bg-app overflow-hidden">
+      <div className="h-screen w-screen flex flex-col overflow-hidden bg-[#f5f6fa]">
         {/* ─── Header ──────────────────────────────────────── */}
-        <header className="h-14 glass border-b border-white/[0.06] flex items-center justify-between px-5 flex-shrink-0 z-20 relative">
+        <header className="h-[52px] bg-white border-b border-[#e2e4ef] flex items-center justify-between px-4 flex-shrink-0 z-20"
+                role="banner">
           {/* Logo */}
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
-                 style={{ background: 'linear-gradient(135deg, #8b5cf6, #6366f1, #ec4899)' }}>
-              <Workflow size={18} className="text-white" />
+            <div className="w-8 h-8 rounded-lg bg-[#7c6cf0] flex items-center justify-center shadow-sm">
+              <Workflow size={16} className="text-white" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-white/90 leading-tight">HR Workflow Designer</h1>
-              <p className="text-[10px] text-white/30">Visual Process Builder</p>
+              <h1 className="text-[13px] font-bold text-[#1e1f2e] leading-tight">HR Workflow Designer</h1>
+              <p className="text-[10px] text-[#b4b6c8]">Visual Process Builder</p>
             </div>
           </div>
 
           {/* Toolbar */}
-          <div className="flex items-center gap-0.5">
-            <ToolbarBtn icon={<Undo2 size={15} />} label="Undo" onClick={undo} disabled={!canUndo} />
-            <ToolbarBtn icon={<Redo2 size={15} />} label="Redo" onClick={redo} disabled={!canRedo} />
-            <Divider />
-            <ToolbarBtn icon={<LayoutGrid size={15} />} label="Auto Layout" onClick={handleAutoLayout} />
-            <Divider />
-            <ToolbarBtn icon={<Download size={15} />} label="Export" onClick={handleExport} />
-            <ToolbarBtn icon={<Upload size={15} />} label="Import" onClick={() => fileInputRef.current?.click()} />
-            <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" />
-            <Divider />
-            <ToolbarBtn icon={<FileJson size={15} />} label="Onboarding" onClick={() => loadTemplate('onboarding')} accent />
-            <ToolbarBtn icon={<FileJson size={15} />} label="Leave" onClick={() => loadTemplate('leave-approval')} accent />
-            <Divider />
-            <ToolbarBtn icon={<Trash2 size={15} />} label="Clear" onClick={clearWorkflow} danger />
-          </div>
+          <nav className="flex items-center gap-0.5" role="toolbar" aria-label="Workflow actions">
+            <Btn icon={<Undo2 size={15} />} label="Undo" onClick={undo} disabled={!canUndo} shortcut="Ctrl+Z" />
+            <Btn icon={<Redo2 size={15} />} label="Redo" onClick={redo} disabled={!canRedo} shortcut="Ctrl+Y" />
+            <Sep />
+            <Btn icon={<LayoutGrid size={15} />} label="Auto Layout" onClick={handleAutoLayout} />
+            <Sep />
+            <Btn icon={<Download size={15} />} label="Export" onClick={handleExport} />
+            <Btn icon={<Upload size={15} />} label="Import" onClick={() => fileInputRef.current?.click()} />
+            <input ref={fileInputRef} type="file" accept=".json" onChange={handleImport} className="hidden" aria-hidden="true" />
+            <Sep />
+            <Btn icon={<FileJson size={15} />} label="Onboarding" onClick={() => loadTemplate('onboarding')} accent />
+            <Btn icon={<FileJson size={15} />} label="Leave Approval" onClick={() => loadTemplate('leave-approval')} accent />
+            <Sep />
+            <Btn icon={<Trash2 size={15} />} label="Clear All" onClick={clearWorkflow} danger />
+          </nav>
 
-          {/* Test Button */}
+          {/* CTA */}
           <button onClick={() => setSandboxOpen(true)}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white
-                       transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-[1.02]"
-            style={{
-              background: 'linear-gradient(135deg, #8b5cf6, #6366f1, #ec4899)',
-              boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)',
-            }}>
-            <FlaskConical size={16} />
-            Test Workflow
+            className="flex items-center gap-2 px-4 py-[7px] bg-[#7c6cf0] hover:bg-[#6354d4]
+                       text-white rounded-lg text-sm font-semibold transition-colors shadow-sm
+                       focus-visible:ring-2 focus-visible:ring-[#ece9fd] focus-visible:ring-offset-2"
+            aria-label="Open workflow sandbox">
+            <FlaskConical size={15} /> Test Workflow
           </button>
         </header>
 
-        {/* ─── Main Layout ─────────────────────────────────── */}
-        <div className="flex flex-1 overflow-hidden relative">
+        {/* ─── Main ────────────────────────────────────────── */}
+        <div className="flex flex-1 overflow-hidden">
           {/* Sidebar */}
-          <aside className="w-52 glass border-r border-white/[0.06] p-4 overflow-y-auto flex-shrink-0 relative z-10">
-            <NodePalette />
+          <aside className="w-52 bg-white border-r border-[#e2e4ef] flex flex-col flex-shrink-0"
+                 role="navigation" aria-label="Node palette">
+            <div className="flex-1 overflow-y-auto p-3.5">
+              <NodePalette />
 
-            <div className="mt-6 pt-4 border-t border-white/[0.06]">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 px-1 mb-2">Stats</h3>
-              <div className="space-y-1.5">
-                <StatRow label="Nodes" value={nodes.length} />
-                <StatRow label="Edges" value={edges.length} />
+              <div className="mt-5 pt-4 border-t border-[#e2e4ef]">
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8e90a6] mb-2">
+                  Statistics
+                </h3>
+                <div className="space-y-1">
+                  <StatRow label="Nodes" value={nodes.length} />
+                  <StatRow label="Connections" value={edges.length} />
+                </div>
               </div>
-            </div>
 
-            <div className="mt-6 pt-4 border-t border-white/[0.06]">
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/30 px-1 mb-2">Tips</h3>
-              <div className="space-y-1 text-[10px] text-white/20">
-                <p>• Drag nodes onto canvas</p>
-                <p>• Drag handles to connect</p>
-                <p>• Click node to configure</p>
-                <p>• Backspace to delete</p>
-                <p>• Ctrl+Z / Ctrl+Y</p>
+              <div className="mt-5 pt-4 border-t border-[#e2e4ef]">
+                <h3 className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8e90a6] mb-2">
+                  Quick Tips
+                </h3>
+                <ul className="space-y-0.5 text-[10px] text-[#8e90a6] list-none">
+                  <li>• Drag nodes onto canvas</li>
+                  <li>• Drag handles to connect</li>
+                  <li>• Click a node to configure</li>
+                  <li>• Backspace to delete</li>
+                  <li>• Ctrl+Z / Ctrl+Y for undo/redo</li>
+                </ul>
               </div>
             </div>
           </aside>
@@ -126,35 +129,40 @@ const App: React.FC = () => {
           {selectedNodeId && <NodeFormPanel />}
         </div>
 
-        {/* Sandbox */}
+        {/* Sandbox Modal */}
         <SandboxPanel isOpen={sandboxOpen} onClose={() => setSandboxOpen(false)} />
       </div>
     </ReactFlowProvider>
   );
 };
 
-/* ─── Sub-components ───────────────────────────────────── */
-const ToolbarBtn: React.FC<{
+/* ─── Toolbar Sub-components ───────────────────────────── */
+const Btn: React.FC<{
   icon: React.ReactNode; label: string; onClick: () => void;
-  disabled?: boolean; accent?: boolean; danger?: boolean;
-}> = ({ icon, label, onClick, disabled, accent, danger }) => (
-  <button onClick={onClick} disabled={disabled} title={label}
-    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150
-      disabled:opacity-20 disabled:cursor-not-allowed
-      ${danger ? 'text-red-400/70 hover:bg-red-500/10 hover:text-red-400'
-        : accent ? 'text-purple-400/70 hover:bg-purple-500/10 hover:text-purple-400'
-          : 'text-white/40 hover:bg-white/[0.06] hover:text-white/70'}`}>
+  disabled?: boolean; accent?: boolean; danger?: boolean; shortcut?: string;
+}> = ({ icon, label, onClick, disabled, accent, danger, shortcut }) => (
+  <button onClick={onClick} disabled={disabled}
+    title={shortcut ? `${label} (${shortcut})` : label}
+    aria-label={label}
+    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium transition-colors
+      disabled:opacity-25 disabled:cursor-not-allowed
+      ${danger
+        ? 'text-[#e04e5e] hover:bg-[#fef0f1]'
+        : accent
+          ? 'text-[#7c6cf0] hover:bg-[#f5f3fe]'
+          : 'text-[#5a5c78] hover:bg-[#f0f1f8] hover:text-[#1e1f2e]'
+      }`}>
     {icon}
     <span className="hidden xl:inline">{label}</span>
   </button>
 );
 
-const Divider = () => <div className="w-px h-5 bg-white/[0.06] mx-1" />;
+const Sep = () => <div className="w-px h-5 bg-[#e2e4ef] mx-1" aria-hidden="true" />;
 
 const StatRow: React.FC<{ label: string; value: number }> = ({ label, value }) => (
-  <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg bg-white/[0.03]">
-    <span className="text-[10px] text-white/30">{label}</span>
-    <span className="text-xs font-bold text-white/60">{value}</span>
+  <div className="flex items-center justify-between px-2.5 py-1.5 rounded-md bg-[#f8f9fc]">
+    <span className="text-[10px] text-[#8e90a6]">{label}</span>
+    <span className="text-xs font-semibold text-[#1e1f2e]">{value}</span>
   </div>
 );
 

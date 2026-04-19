@@ -130,8 +130,3 @@ src/
 - **E2E tests** — Cypress/Playwright for full workflow creation flows
 - **Storybook** — Component documentation and visual testing
 
----
-
-## 📄 License
-
-MIT

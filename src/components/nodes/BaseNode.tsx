@@ -16,114 +16,83 @@ interface BaseNodeProps {
 }
 
 export const BaseNode: React.FC<BaseNodeProps> = ({
-  id,
-  nodeType,
-  selected,
-  icon,
-  title,
-  subtitle,
-  children,
-  hasValidationError,
+  id, nodeType, selected, icon, title, subtitle, children, hasValidationError,
 }) => {
   const deleteNode = useWorkflowStore((s) => s.deleteNode);
   const visuals = NODE_VISUALS[nodeType];
 
   return (
     <div
+      role="button"
+      aria-label={`${visuals.label} node: ${title || 'Untitled'}`}
+      tabIndex={0}
       className={`
-        relative group min-w-[200px] max-w-[240px] rounded-xl border shadow-xl
-        transition-all duration-200 ease-out backdrop-blur-xl
+        relative group min-w-[210px] max-w-[250px] rounded-xl border-[1.5px]
+        transition-all duration-150 ease-out
         ${selected
-          ? 'scale-105 shadow-2xl'
-          : 'hover:shadow-2xl hover:-translate-y-0.5'
-        }
+          ? 'shadow-lg ring-2 ring-offset-2 scale-[1.03]'
+          : 'shadow-sm hover:shadow-md hover:-translate-y-0.5'}
       `}
       style={{
-        backgroundColor: selected
-          ? visuals.bgColor.replace('0.08', '0.14')
-          : visuals.bgColor,
+        backgroundColor: visuals.bgColor,
         borderColor: selected ? visuals.color : visuals.borderColor,
-        boxShadow: selected
-          ? `0 0 30px ${visuals.color}20, 0 8px 32px rgba(0,0,0,0.4)`
-          : '0 4px 24px rgba(0,0,0,0.3)',
+        // ring color via CSS variable
+        ...(selected ? { '--tw-ring-color': visuals.color + '40', '--tw-ring-offset-color': '#f5f6fa' } as React.CSSProperties : {}),
       }}
     >
-      {/* Validation error indicator */}
+      {/* Validation badge */}
       {hasValidationError && (
-        <div
-          className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full border-2 animate-pulse z-10"
-          style={{ backgroundColor: '#ef4444', borderColor: '#0c0a1d' }}
-        />
+        <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#e04e5e] rounded-full border-2 border-white shadow-sm animate-pulse z-10"
+             role="alert" aria-label="Validation error" />
       )}
 
-      {/* Delete button */}
+      {/* Delete */}
       <button
-        className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full flex items-center justify-center z-10
-                   opacity-0 group-hover:opacity-100 transition-all duration-150
-                   bg-red-500/80 hover:bg-red-500 text-white backdrop-blur-sm
-                   border border-red-400/30 shadow-lg"
-        onClick={(e) => {
-          e.stopPropagation();
-          deleteNode(id);
-        }}
-        title="Delete node"
+        aria-label="Delete node"
+        className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center z-10
+                   opacity-0 group-hover:opacity-100 transition-opacity duration-150
+                   bg-white text-[#e04e5e] border border-[#f5c4ca] shadow-sm
+                   hover:bg-[#fef0f1] focus-visible:opacity-100"
+        onClick={(e) => { e.stopPropagation(); deleteNode(id); }}
       >
         <Trash2 size={11} />
       </button>
 
-      {/* Target handle (top) — not for Start nodes */}
+      {/* Target handle */}
       {nodeType !== 'start' && (
-        <Handle
-          type="target"
-          position={Position.Top}
-          className="!w-3 !h-3 !border-2 !rounded-full"
-          style={{
-            backgroundColor: visuals.color,
-            borderColor: '#0c0a1d',
-          }}
-        />
+        <Handle type="target" position={Position.Top}
+          className="!w-3 !h-3 !border-2 !border-white !rounded-full !shadow-sm"
+          style={{ backgroundColor: visuals.color }} />
       )}
 
-      {/* Node content */}
+      {/* Content */}
       <div className="px-3.5 py-3">
-        <div className="flex items-center gap-2.5 mb-1">
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: visuals.color + '18', color: visuals.color }}
-          >
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+               style={{ backgroundColor: visuals.color + '14', color: visuals.color }}>
             {icon}
           </div>
           <div className="flex-1 min-w-0">
-            <div
-              className="text-[10px] font-bold uppercase tracking-[0.12em]"
-              style={{ color: visuals.color, opacity: 0.8 }}
-            >
+            <div className="text-[10px] font-semibold uppercase tracking-[0.1em]"
+                 style={{ color: visuals.color }}>
               {visuals.label}
             </div>
-            <div className="text-[13px] font-semibold text-white/90 truncate">
+            <div className="text-[13px] font-semibold text-[#1e1f2e] truncate">
               {title || 'Untitled'}
             </div>
           </div>
         </div>
         {subtitle && (
-          <div className="text-[11px] text-white/40 mt-1 truncate pl-[42px]">
-            {subtitle}
-          </div>
+          <div className="text-[11px] text-[#8e90a6] mt-1.5 truncate pl-[42px]">{subtitle}</div>
         )}
         {children}
       </div>
 
-      {/* Source handle (bottom) — not for End nodes */}
+      {/* Source handle */}
       {nodeType !== 'end' && (
-        <Handle
-          type="source"
-          position={Position.Bottom}
-          className="!w-3 !h-3 !border-2 !rounded-full"
-          style={{
-            backgroundColor: visuals.color,
-            borderColor: '#0c0a1d',
-          }}
-        />
+        <Handle type="source" position={Position.Bottom}
+          className="!w-3 !h-3 !border-2 !border-white !rounded-full !shadow-sm"
+          style={{ backgroundColor: visuals.color }} />
       )}
     </div>
   );

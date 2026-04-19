@@ -2,49 +2,29 @@ import React from 'react';
 import { type EndNodeData } from '../../types';
 import { FormField, inputClassName } from './shared/FormField';
 
-interface EndNodeFormProps {
-  data: EndNodeData;
-  onChange: (data: Partial<EndNodeData>) => void;
-}
+interface Props { data: EndNodeData; onChange: (d: Partial<EndNodeData>) => void; }
 
-export const EndNodeForm: React.FC<EndNodeFormProps> = ({ data, onChange }) => {
-  return (
-    <div>
-      <FormField label="End Message">
-        <input
-          type="text"
-          value={data.endMessage}
-          onChange={(e) => onChange({ endMessage: e.target.value })}
-          placeholder="e.g., Workflow Complete!"
-          className={inputClassName}
-        />
-      </FormField>
-
-      <FormField label="Show Summary">
-        <label className="flex items-center gap-3 cursor-pointer group">
-          <div className="relative">
-            <input
-              type="checkbox"
-              checked={data.showSummary}
-              onChange={(e) => onChange({ showSummary: e.target.checked })}
-              className="sr-only"
-            />
-            <div
-              className={`w-10 h-5 rounded-full transition-colors duration-200 ${
-                data.showSummary ? 'bg-purple-500' : 'bg-white/10'
-              }`}
-            />
-            <div
-              className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
-                data.showSummary ? 'translate-x-5' : 'translate-x-0'
-              }`}
-            />
-          </div>
-          <span className="text-[13px] text-white/50 group-hover:text-white/70 transition-colors">
-            {data.showSummary ? 'Summary will be displayed' : 'No summary'}
-          </span>
-        </label>
-      </FormField>
-    </div>
-  );
-};
+export const EndNodeForm: React.FC<Props> = ({ data, onChange }) => (
+  <div>
+    <FormField label="End Message" htmlFor="end-msg">
+      <input id="end-msg" type="text" value={data.endMessage}
+        onChange={(e) => onChange({ endMessage: e.target.value })}
+        placeholder="e.g., Workflow Complete!" className={inputClassName} />
+    </FormField>
+    <FormField label="Show Summary">
+      <label className="flex items-center gap-3 cursor-pointer group" htmlFor="end-summary">
+        <div className="relative">
+          <input id="end-summary" type="checkbox" checked={data.showSummary}
+            onChange={(e) => onChange({ showSummary: e.target.checked })} className="sr-only" />
+          <div className={`w-10 h-[22px] rounded-full transition-colors duration-200 ${
+            data.showSummary ? 'bg-[#7c6cf0]' : 'bg-[#e2e4ef]'}`} />
+          <div className={`absolute top-[3px] left-[3px] w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${
+            data.showSummary ? 'translate-x-[18px]' : 'translate-x-0'}`} />
+        </div>
+        <span className="text-[13px] text-[#5a5c78]">
+          {data.showSummary ? 'Summary enabled' : 'No summary'}
+        </span>
+      </label>
+    </FormField>
+  </div>
+);
