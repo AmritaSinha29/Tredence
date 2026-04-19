@@ -150,9 +150,9 @@ export const NODE_VISUALS: Record<WorkflowNodeType, NodeVisualConfig> = {
     label: 'Approval',
   },
   automated: {
-    color: '#7c6cf0',
-    bgColor: '#f5f3fe',
-    borderColor: '#d4cef8',
+    color: '#F36633',
+    bgColor: '#FFF5F0',
+    borderColor: '#FCDCCF',
     icon: 'Zap',
     label: 'Automated',
   },

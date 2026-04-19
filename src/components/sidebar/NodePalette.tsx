@@ -36,7 +36,7 @@ export const NodePalette: React.FC = () => {
               role="listitem"
               draggable
               onDragStart={(e) => onDragStart(e, item.type)}
-              className="flex items-center gap-2 px-2.5 py-2 rounded-lg border cursor-grab
+              className="flex items-center gap-2 px-2.5 py-2 rounded-md border cursor-grab
                          active:cursor-grabbing transition-all duration-150
                          hover:shadow-sm hover:border-[#d0d3e4] active:scale-[0.97]"
               style={{

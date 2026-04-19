@@ -65,7 +65,7 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30"
          role="dialog" aria-modal="true" aria-label="Workflow Sandbox">
-      <div className="w-[560px] max-h-[80vh] bg-white rounded-2xl shadow-xl flex flex-col overflow-hidden animate-fadeIn border border-[#e2e4ef]">
+      <div className="w-[560px] max-h-[80vh] bg-white rounded-md shadow-xl flex flex-col overflow-hidden animate-fadeIn border border-[#e2e4ef]">
         {/* Header */}
         <div className="px-5 py-4 border-b border-[#e2e4ef] flex items-center justify-between bg-[#f8f9fc]">
           <div>
@@ -73,7 +73,7 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
             <p className="text-xs text-[#8e90a6] mt-0.5">Validate structure & simulate execution</p>
           </div>
           <button onClick={onClose} aria-label="Close sandbox"
-            className="p-2 rounded-lg hover:bg-[#f0f1f8] text-[#8e90a6] hover:text-[#5a5c78] transition-colors">
+            className="p-2 rounded-md hover:bg-[#f0f1f8] text-[#8e90a6] hover:text-[#5a5c78] transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -81,13 +81,13 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
         {/* Actions */}
         <div className="px-5 py-3 border-b border-[#e2e4ef] flex gap-2">
           <button onClick={handleValidate}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
+            className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all
                        bg-[#e7f8f0] text-[#22a86b] border border-[#c5e8d8] hover:bg-[#d4f1e4]">
             <ShieldCheck size={16} /> Validate
           </button>
           <button onClick={handleSimulate} disabled={simulating}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
-                       bg-[#f5f3fe] text-[#7c6cf0] border border-[#d4cef8] hover:bg-[#ece9fd]
+            className="flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all
+                       bg-[#F2F6F8] text-[#0F3D4C] border border-[#C5D9E0] hover:bg-[#E5EDF0]
                        disabled:opacity-40 disabled:cursor-not-allowed">
             {simulating ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />}
             {simulating ? 'Running...' : 'Simulate'}
@@ -100,7 +100,7 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
             <button key={t} onClick={() => setTab(t)}
               className={`px-3 py-2 text-xs font-medium transition-colors capitalize -mb-px
                 ${tab === t
-                  ? 'text-[#7c6cf0] border-b-2 border-[#7c6cf0]'
+                  ? 'text-[#0F3D4C] border-b-2 border-[#0F3D4C]'
                   : 'text-[#8e90a6] hover:text-[#5a5c78]'}`}>
               {t === 'validate' ? 'Validation' : 'Simulation'}
             </button>
@@ -114,7 +114,7 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
               <p className="text-sm text-[#b4b6c8] text-center py-8">Click "Validate" to check your workflow</p>
             ) : (
               <div className="space-y-3">
-                <div className={`p-3 rounded-lg border flex items-center gap-2 ${
+                <div className={`p-3 rounded-md border flex items-center gap-2 ${
                   validation.isValid ? 'bg-[#e7f8f0] border-[#c5e8d8]' : 'bg-[#fef0f1] border-[#f5c4ca]'}`}>
                   {validation.isValid
                     ? <CheckCircle size={18} className="text-[#22a86b]" />
@@ -124,13 +124,13 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
                   </span>
                 </div>
                 {validation.errors.map((e, i) => (
-                  <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-[#fef0f1] border border-[#f5c4ca]">
+                  <div key={i} className="flex items-start gap-2 p-3 rounded-md bg-[#fef0f1] border border-[#f5c4ca]">
                     <XCircle size={14} className="text-[#e04e5e] mt-0.5 flex-shrink-0" />
                     <span className="text-xs text-[#5a5c78]">{e.message}</span>
                   </div>
                 ))}
                 {validation.warnings.map((w, i) => (
-                  <div key={i} className="flex items-start gap-2 p-3 rounded-lg bg-[#fef8eb] border border-[#f5dfa0]">
+                  <div key={i} className="flex items-start gap-2 p-3 rounded-md bg-[#fef8eb] border border-[#f5dfa0]">
                     <AlertTriangle size={14} className="text-[#e89e1c] mt-0.5 flex-shrink-0" />
                     <span className="text-xs text-[#5a5c78]">{w.message}</span>
                   </div>
@@ -141,14 +141,14 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
           {tab === 'simulate' && (
             simulating ? (
               <div className="flex flex-col items-center justify-center py-12 gap-3">
-                <Loader2 size={28} className="text-[#7c6cf0] animate-spin" />
+                <Loader2 size={28} className="text-[#0F3D4C] animate-spin" />
                 <p className="text-sm text-[#8e90a6]">Running simulation...</p>
               </div>
             ) : !simulation ? (
               <p className="text-sm text-[#b4b6c8] text-center py-8">Click "Simulate" to run your workflow</p>
             ) : (
               <div className="space-y-4">
-                <div className={`p-3 rounded-lg border flex items-center justify-between ${
+                <div className={`p-3 rounded-md border flex items-center justify-between ${
                   simulation.status === 'completed' ? 'bg-[#e7f8f0] border-[#c5e8d8]' : 'bg-[#fef0f1] border-[#f5c4ca]'}`}>
                   <div className="flex items-center gap-2">
                     {simulation.status === 'completed'
@@ -176,10 +176,10 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
             <button 
               onClick={handleActivate}
               disabled={activated}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-xs font-semibold transition-all ${
                 activated 
                   ? 'bg-[#e7f8f0] text-[#22a86b] border border-[#c5e8d8]' 
-                  : 'bg-[#7c6cf0] text-white hover:bg-[#6354d4] shadow-sm'
+                  : 'bg-[#0F3D4C] text-white hover:bg-[#0A2B36] shadow-sm'
               }`}>
               {activated ? (
                 <><CheckCircle size={14} /> Activated!</>

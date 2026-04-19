@@ -66,8 +66,8 @@ export const WorkflowsPage: React.FC = () => {
             <p className="text-sm text-[#8e90a6] mt-1">{stats.total} workflows across your organization</p>
           </div>
           <button onClick={() => navigate('/designer')}
-            className="flex items-center gap-2 px-4 py-2.5 bg-[#7c6cf0] hover:bg-[#6354d4] text-white
-                       rounded-lg text-sm font-semibold transition-colors shadow-sm">
+            className="flex items-center gap-2 px-4 py-2.5 bg-[#0F3D4C] hover:bg-[#0A2B36] text-white
+                       rounded-md text-sm font-semibold transition-colors shadow-sm">
             + New Workflow
           </button>
         </div>
@@ -75,12 +75,12 @@ export const WorkflowsPage: React.FC = () => {
         {/* Filters */}
         <div className="flex items-center gap-4 mb-5">
           {/* Status Tabs */}
-          <div className="flex bg-white rounded-lg border border-[#e2e4ef] p-0.5">
+          <div className="flex bg-white rounded-md border border-[#e2e4ef] p-0.5">
             {STATUS_TABS.map((tab) => (
               <button key={tab.key} onClick={() => setFilter(tab.key)}
                 className={`px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   filter === tab.key
-                    ? 'bg-[#7c6cf0] text-white shadow-sm'
+                    ? 'bg-[#0F3D4C] text-white shadow-sm'
                     : 'text-[#5a5c78] hover:bg-[#f8f9fc]'
                 }`}>
                 {tab.label}
@@ -96,14 +96,14 @@ export const WorkflowsPage: React.FC = () => {
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#b4b6c8]" />
             <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by name, department, or creator..."
-              className="w-full pl-8 pr-3 py-2 text-xs border border-[#e2e4ef] rounded-lg bg-white
+              className="w-full pl-8 pr-3 py-2 text-xs border border-[#e2e4ef] rounded-md bg-white
                          text-[#1e1f2e] placeholder:text-[#b4b6c8]
-                         focus:outline-none focus:border-[#7c6cf0] focus:ring-2 focus:ring-[#ece9fd]" />
+                         focus:outline-none focus:border-[#0F3D4C] focus:ring-2 focus:ring-[#E5EDF0]" />
           </div>
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-xl border border-[#e2e4ef] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-md border border-[#e2e4ef] shadow-sm overflow-hidden">
           <table className="w-full">
             <thead>
               <tr className="border-b border-[#e2e4ef] bg-[#f8f9fc]">
@@ -131,8 +131,8 @@ export const WorkflowsPage: React.FC = () => {
                       onClick={() => openWorkflow(wf)}>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <Workflow size={14} className="text-[#7c6cf0] flex-shrink-0" />
-                        <span className="text-sm font-medium text-[#1e1f2e] group-hover:text-[#7c6cf0] transition-colors">
+                        <Workflow size={14} className="text-[#0F3D4C] flex-shrink-0" />
+                        <span className="text-sm font-medium text-[#1e1f2e] group-hover:text-[#0F3D4C] transition-colors">
                           {wf.name}
                         </span>
                       </div>
@@ -163,7 +163,7 @@ export const WorkflowsPage: React.FC = () => {
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onClick={(e) => { e.stopPropagation(); openWorkflow(wf); }}
-                          className="flex items-center gap-1 text-xs text-[#7c6cf0] font-medium hover:underline mr-2">
+                          className="flex items-center gap-1 text-xs text-[#0F3D4C] font-medium hover:underline mr-2">
                           Open <ArrowRight size={11} />
                         </button>
                         

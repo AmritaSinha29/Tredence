@@ -269,7 +269,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     }
 
     if (template === 'doc-verification') {
-      const edgeStyle = { stroke: '#7c6cf0', strokeWidth: 2 };
+      const edgeStyle = { stroke: '#0F3D4C', strokeWidth: 2 };
       const nodes: WorkflowNode[] = [
         { id: 'dv_start', type: 'start', position: { x: 250, y: 0 }, data: { type: 'start', label: 'Start', title: 'Document Verification', metadata: { process: 'compliance' } } },
         { id: 'dv_auto1', type: 'automated', position: { x: 250, y: 120 }, data: { type: 'automated', label: 'Automated Step', title: 'OCR Scan', actionId: 'generate_report', actionParams: { format: 'pdf' } } },
@@ -287,7 +287,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     }
 
     if (template === 'exit-process') {
-      const edgeStyle = { stroke: '#7c6cf0', strokeWidth: 2 };
+      const edgeStyle = { stroke: '#0F3D4C', strokeWidth: 2 };
       const nodes: WorkflowNode[] = [
         { id: 'ex_start', type: 'start', position: { x: 250, y: 0 }, data: { type: 'start', label: 'Start', title: 'Exit Process', metadata: { type: 'offboarding' } } },
         { id: 'ex_task1', type: 'task', position: { x: 250, y: 120 }, data: { type: 'task', label: 'Task', title: 'Asset Return', description: 'Return laptop, ID card, and access keys', assignee: 'IT Admin', dueDate: '', customFields: {} } },
@@ -311,7 +311,7 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
     }
 
     if (template === 'performance-review') {
-      const edgeStyle = { stroke: '#7c6cf0', strokeWidth: 2 };
+      const edgeStyle = { stroke: '#0F3D4C', strokeWidth: 2 };
       const nodes: WorkflowNode[] = [
         { id: 'pr_start', type: 'start', position: { x: 250, y: 0 }, data: { type: 'start', label: 'Start', title: 'Performance Review', metadata: { cycle: 'Annual' } } },
         { id: 'pr_task1', type: 'task', position: { x: 250, y: 120 }, data: { type: 'task', label: 'Task', title: 'Self Assessment', description: 'Employee fills self-evaluation form', assignee: 'Employee', dueDate: '', customFields: {} } },

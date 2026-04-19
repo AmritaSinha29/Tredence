@@ -50,7 +50,7 @@ export const WorkflowCanvas: React.FC = () => {
         snapToGrid snapGrid={[16, 16]}
         defaultEdgeOptions={{
           animated: true,
-          style: { stroke: '#7c6cf0', strokeWidth: 2 },
+          style: { stroke: '#0F3D4C', strokeWidth: 2 },
         }}
         style={{ background: '#f5f6fa' }}
       >

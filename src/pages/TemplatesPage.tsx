@@ -69,7 +69,7 @@ const MORE_TEMPLATES: Template[] = [
     name: 'Performance Review',
     description: 'Annual performance cycle with self-assessment, peer feedback, calibration, and rating finalization.',
     icon: <Award size={22} />,
-    iconColor: '#7c6cf0', iconBg: '#f5f3fe',
+    iconColor: '#0F3D4C', iconBg: '#F2F6F8',
     nodes: 7, edges: 6,
     tags: ['HR', 'Performance'],
     steps: ['Self Assessment', 'Peer Feedback', 'Manager Rating', 'Calibration', 'Generate Report', 'Complete'],
@@ -102,10 +102,10 @@ export const TemplatesPage: React.FC = () => {
         </h3>
         <div className="grid grid-cols-2 gap-5 mb-10">
           {TEMPLATES.map((t) => (
-            <div key={t.id} className="bg-white rounded-xl border border-[#e2e4ef] shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+            <div key={t.id} className="bg-white rounded-md border border-[#e2e4ef] shadow-sm overflow-hidden hover:shadow-md transition-shadow">
               <div className="p-5">
                 <div className="flex items-start gap-3.5 mb-3">
-                  <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                  <div className="w-11 h-11 rounded-md flex items-center justify-center flex-shrink-0"
                        style={{ backgroundColor: t.iconBg, color: t.iconColor }}>
                     {t.icon}
                   </div>
@@ -137,8 +137,8 @@ export const TemplatesPage: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] text-[#b4b6c8]">{t.nodes} nodes · {t.edges} connections</span>
                   <button onClick={() => handleUse(t.id)}
-                    className="flex items-center gap-1.5 px-4 py-2 bg-[#7c6cf0] text-white rounded-lg text-xs font-semibold
-                               hover:bg-[#6354d4] transition-colors shadow-sm">
+                    className="flex items-center gap-1.5 px-4 py-2 bg-[#0F3D4C] text-white rounded-md text-xs font-semibold
+                               hover:bg-[#0A2B36] transition-colors shadow-sm">
                     Use Template <ArrowRight size={13} />
                   </button>
                 </div>
@@ -153,9 +153,9 @@ export const TemplatesPage: React.FC = () => {
         </h3>
         <div className="grid grid-cols-3 gap-4">
           {MORE_TEMPLATES.map((t) => (
-            <div key={t.id} className="bg-white rounded-xl border border-[#e2e4ef] shadow-sm p-4 hover:shadow-md transition-shadow">
+            <div key={t.id} className="bg-white rounded-md border border-[#e2e4ef] shadow-sm p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center"
+                <div className="w-9 h-9 rounded-md flex items-center justify-center"
                      style={{ backgroundColor: t.iconBg, color: t.iconColor }}>
                   {t.icon}
                 </div>
@@ -182,7 +182,7 @@ export const TemplatesPage: React.FC = () => {
               <div className="flex items-center justify-between pt-3 border-t border-[#e2e4ef]">
                 <span className="text-[10px] text-[#b4b6c8]">{t.nodes} nodes</span>
                 <button onClick={() => handleUse(t.id)}
-                  className="text-xs text-[#7c6cf0] font-medium hover:underline flex items-center gap-1">
+                  className="text-xs text-[#0F3D4C] font-medium hover:underline flex items-center gap-1">
                   Use Template <ArrowRight size={11} />
                 </button>
               </div>

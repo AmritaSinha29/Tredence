@@ -47,7 +47,7 @@ export const NodeFormPanel: React.FC = () => {
       {/* Header */}
       <div className="px-4 py-3 border-b border-[#e2e4ef] flex items-center justify-between bg-[#f8f9fc]">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center"
+          <div className="w-9 h-9 rounded-md flex items-center justify-center"
                style={{ backgroundColor: v.color + '14', color: v.color }}>
             {ICONS[data.type]}
           </div>

@@ -33,12 +33,12 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
             placeholder={keyPlaceholder} aria-label={`Field ${i + 1} key`}
             className="flex-1 px-2.5 py-1.5 text-xs border border-[#e2e4ef] rounded-md bg-white
                        text-[#1e1f2e] placeholder:text-[#b4b6c8]
-                       focus:outline-none focus:border-[#7c6cf0] focus:ring-2 focus:ring-[#ece9fd]" />
+                       focus:outline-none focus:border-[#0F3D4C] focus:ring-2 focus:ring-[#E5EDF0]" />
           <input type="text" value={value} onChange={(e) => onChange({ ...entries, [key]: e.target.value })}
             placeholder={valuePlaceholder} aria-label={`Field ${i + 1} value`}
             className="flex-1 px-2.5 py-1.5 text-xs border border-[#e2e4ef] rounded-md bg-white
                        text-[#1e1f2e] placeholder:text-[#b4b6c8]
-                       focus:outline-none focus:border-[#7c6cf0] focus:ring-2 focus:ring-[#ece9fd]" />
+                       focus:outline-none focus:border-[#0F3D4C] focus:ring-2 focus:ring-[#E5EDF0]" />
           <button onClick={() => removePair(key)} aria-label={`Remove field ${key}`}
             className="p-1 text-[#b4b6c8] hover:text-[#e04e5e] hover:bg-[#fef0f1] rounded transition-colors">
             <X size={14} />
@@ -46,7 +46,7 @@ export const KeyValueEditor: React.FC<KeyValueEditorProps> = ({
         </div>
       ))}
       <button onClick={addPair}
-        className="flex items-center gap-1 text-xs text-[#7c6cf0] hover:text-[#6354d4] font-medium mt-1 transition-colors">
+        className="flex items-center gap-1 text-xs text-[#0F3D4C] hover:text-[#0A2B36] font-medium mt-1 transition-colors">
         <Plus size={14} /> Add field
       </button>
     </div>

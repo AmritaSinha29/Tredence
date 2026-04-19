@@ -27,7 +27,7 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
       aria-label={`${visuals.label} node: ${title || 'Untitled'}`}
       tabIndex={0}
       className={`
-        relative group min-w-[210px] max-w-[250px] rounded-xl border-[1.5px]
+        relative group min-w-[210px] max-w-[250px] rounded-md border-[1.5px]
         transition-all duration-150 ease-out
         ${selected
           ? 'shadow-lg ring-2 ring-offset-2 scale-[1.03]'
@@ -68,7 +68,7 @@ export const BaseNode: React.FC<BaseNodeProps> = ({
       {/* Content */}
       <div className="px-3.5 py-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+          <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0"
                style={{ backgroundColor: visuals.color + '14', color: visuals.color }}>
             {icon}
           </div>

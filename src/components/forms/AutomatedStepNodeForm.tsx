@@ -26,7 +26,7 @@ export const AutomatedStepNodeForm: React.FC<Props> = ({ data, onChange }) => {
       <FormField label="Action" htmlFor="auto-action">
         {loading ? (
           <div className="flex items-center gap-2 text-xs text-[#8e90a6] py-2">
-            <div className="w-3 h-3 border-2 border-[#7c6cf0] border-t-transparent rounded-full animate-spin" />
+            <div className="w-3 h-3 border-2 border-[#0F3D4C] border-t-transparent rounded-full animate-spin" />
             Loading actions from API...
           </div>
         ) : (
@@ -38,8 +38,8 @@ export const AutomatedStepNodeForm: React.FC<Props> = ({ data, onChange }) => {
         )}
       </FormField>
       {selected && selected.params.length > 0 && (
-        <div className="p-3 rounded-lg border border-[#d4cef8] bg-[#f9f8fe]">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#7c6cf0] mb-3">
+        <div className="p-3 rounded-md border border-[#C5D9E0] bg-[#f9f8fe]">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[#0F3D4C] mb-3">
             Action Parameters
           </p>
           {selected.params.map((param) => (

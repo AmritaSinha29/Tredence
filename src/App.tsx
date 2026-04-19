@@ -21,7 +21,7 @@ const App: React.FC = () => (
            role="navigation" aria-label="Main navigation">
         {/* Logo */}
         <div className="h-[52px] flex items-center gap-2.5 px-5 border-b border-[#e2e4ef] flex-shrink-0">
-          <div className="w-8 h-8 rounded-lg bg-[#7c6cf0] flex items-center justify-center shadow-sm">
+          <div className="w-8 h-8 rounded-md bg-[#0F3D4C] flex items-center justify-center shadow-sm">
             <Workflow size={16} className="text-white" />
           </div>
           <div>
@@ -37,9 +37,9 @@ const App: React.FC = () => (
             {NAV_ITEMS.map((item) => (
               <NavLink key={item.to} to={item.to}
                 className={({ isActive }) =>
-                  `flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors ${
+                  `flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[13px] font-medium transition-colors ${
                     isActive
-                      ? 'bg-[#f5f3fe] text-[#7c6cf0]'
+                      ? 'bg-[#F2F6F8] text-[#0F3D4C]'
                       : 'text-[#5a5c78] hover:bg-[#f8f9fc] hover:text-[#1e1f2e]'
                   }`
                 }>

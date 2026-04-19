@@ -83,7 +83,7 @@ export const DesignerPage: React.FC = () => {
           </nav>
           <div className="flex items-center gap-2">
             <button onClick={handleSave} disabled={savedStatus}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm border ${
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors shadow-sm border ${
                 savedStatus
                   ? 'bg-[#e7f8f0] text-[#22a86b] border-[#c5e8d8]'
                   : 'bg-white text-[#1e1f2e] border-[#e2e4ef] hover:bg-[#f8f9fc]'
@@ -92,8 +92,8 @@ export const DesignerPage: React.FC = () => {
               {savedStatus ? 'Saved!' : 'Save Draft'}
             </button>
             <button onClick={() => setSandboxOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#7c6cf0] hover:bg-[#6354d4] text-white
-                         rounded-lg text-xs font-semibold transition-colors shadow-sm">
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0F3D4C] hover:bg-[#0A2B36] text-white
+                         rounded-md text-xs font-semibold transition-colors shadow-sm">
               <FlaskConical size={13} /> Test Workflow
             </button>
           </div>

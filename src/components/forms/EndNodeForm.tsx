@@ -17,7 +17,7 @@ export const EndNodeForm: React.FC<Props> = ({ data, onChange }) => (
           <input id="end-summary" type="checkbox" checked={data.showSummary}
             onChange={(e) => onChange({ showSummary: e.target.checked })} className="sr-only" />
           <div className={`w-10 h-[22px] rounded-full transition-colors duration-200 ${
-            data.showSummary ? 'bg-[#7c6cf0]' : 'bg-[#e2e4ef]'}`} />
+            data.showSummary ? 'bg-[#0F3D4C]' : 'bg-[#e2e4ef]'}`} />
           <div className={`absolute top-[3px] left-[3px] w-4 h-4 bg-white rounded-full shadow-sm transition-transform duration-200 ${
             data.showSummary ? 'translate-x-[18px]' : 'translate-x-0'}`} />
         </div>

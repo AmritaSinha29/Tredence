@@ -13,10 +13,10 @@
   --text-secondary: #5a5c78;
   --text-muted: #8e90a6;
   --text-placeholder: #b4b6c8;
-  --accent: #7c6cf0;
-  --accent-light: #ece9fd;
+  --accent: #0F3D4C;
+  --accent-light: #E5EDF0;
   --accent-lighter: #f6f5fe;
-  --accent-dark: #6354d4;
+  --accent-dark: #0A2B36;
   --success: #22a86b;
   --success-light: #e7f8f0;
   --danger: #e04e5e;
@@ -26,7 +26,7 @@
   --node-start: #22a86b;
   --node-task: #4a8ff7;
   --node-approval: #e89e1c;
-  --node-automated: #7c6cf0;
+  --node-automated: #0F3D4C;
   --node-end: #e04e5e;
 }
 
