@@ -1,12 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom';
-import { Workflow, LayoutDashboard, FileJson, PenTool } from 'lucide-react';
+import { Workflow, LayoutDashboard, FileJson, PenTool, FolderOpen } from 'lucide-react';
 import { DashboardPage } from './pages/DashboardPage';
 import { TemplatesPage } from './pages/TemplatesPage';
 import { DesignerPage } from './pages/DesignerPage';
+import { WorkflowsPage } from './pages/WorkflowsPage';
 
 const NAV_ITEMS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/workflows', icon: FolderOpen, label: 'Workflows' },
   { to: '/templates', icon: FileJson, label: 'Templates' },
   { to: '/designer', icon: PenTool, label: 'Designer' },
 ];
@@ -61,6 +63,7 @@ const App: React.FC = () => (
         <header className="h-[52px] bg-white border-b border-[#e2e4ef] flex items-center px-5 flex-shrink-0">
           <Routes>
             <Route path="/dashboard" element={<PageTitle title="Dashboard" subtitle="Overview & quick actions" />} />
+            <Route path="/workflows" element={<PageTitle title="Workflows" subtitle="All workflows in your organization" />} />
             <Route path="/templates" element={<PageTitle title="Templates" subtitle="Pre-built workflow patterns" />} />
             <Route path="/designer" element={<PageTitle title="Workflow Designer" subtitle="Drag-and-drop builder" />} />
             <Route path="*" element={<PageTitle title="Dashboard" subtitle="Overview & quick actions" />} />
@@ -70,6 +73,7 @@ const App: React.FC = () => (
         {/* Page Content */}
         <Routes>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/workflows" element={<WorkflowsPage />} />
           <Route path="/templates" element={<TemplatesPage />} />
           <Route path="/designer" element={<DesignerPage />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

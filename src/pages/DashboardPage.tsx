@@ -1,34 +1,29 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
-  Workflow, Plus, FileJson, Clock, BarChart3,
+  Workflow, Plus, FileJson, BarChart3,
   ArrowRight, Play, ClipboardList, UserCheck, Zap, Square,
-  Layers, Activity, CheckCircle,
+  Layers, Activity, CheckCircle, FileEdit,
 } from 'lucide-react';
 import { useWorkflowStore } from '../store/workflowStore';
-
-type TemplateId = 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review';
+import { WORKFLOWS, STATS as DATA_STATS, type SavedWorkflow } from '../data/workflows';
 
 const STATS = [
-  { label: 'Active Workflows', value: '12', icon: Activity, color: '#7c6cf0', bg: '#f5f3fe', to: '/templates' as const },
-  { label: 'Templates Available', value: '5', icon: Layers, color: '#4a8ff7', bg: '#f0f5ff', to: '/templates' as const },
-  { label: 'Completed Today', value: '8', icon: CheckCircle, color: '#22a86b', bg: '#e7f8f0', to: '/designer' as const },
-  { label: 'Avg. Completion', value: '2.4h', icon: Clock, color: '#e89e1c', bg: '#fef8eb', to: '/designer' as const },
+  { label: 'Active Workflows', value: String(DATA_STATS.active), icon: Activity, color: '#7c6cf0', bg: '#f5f3fe', to: '/workflows?status=active' },
+  { label: 'Templates Available', value: '5', icon: Layers, color: '#4a8ff7', bg: '#f0f5ff', to: '/templates' },
+  { label: 'Completed Today', value: String(DATA_STATS.completed), icon: CheckCircle, color: '#22a86b', bg: '#e7f8f0', to: '/workflows?status=completed' },
+  { label: 'Drafts', value: String(DATA_STATS.drafts), icon: FileEdit, color: '#e89e1c', bg: '#fef8eb', to: '/workflows?status=draft' },
 ];
 
-const RECENT: { name: string; nodes: number; status: string; updated: string; template: TemplateId }[] = [
-  { name: 'Employee Onboarding — Q2', nodes: 6, status: 'active', updated: '2 hours ago', template: 'onboarding' },
-  { name: 'Annual Leave Request Flow', nodes: 7, status: 'draft', updated: '5 hours ago', template: 'leave-approval' },
-  { name: 'Document Verification', nodes: 5, status: 'active', updated: '1 day ago', template: 'doc-verification' },
-  { name: 'Exit Process Workflow', nodes: 8, status: 'draft', updated: '3 days ago', template: 'exit-process' },
-];
+// Show latest 6 workflows
+const RECENT = WORKFLOWS.slice(0, 6);
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const loadTemplate = useWorkflowStore((s) => s.loadTemplate);
 
-  const openWorkflow = (template: TemplateId) => {
-    loadTemplate(template);
+  const openWorkflow = (wf: SavedWorkflow) => {
+    loadTemplate(wf.template);
     navigate('/designer');
   };
 
@@ -41,7 +36,7 @@ export const DashboardPage: React.FC = () => {
           <p className="text-sm text-[#8e90a6] mt-1">Design, validate, and simulate HR workflows — all in one place.</p>
         </div>
 
-        {/* Stats Grid — each clickable */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           {STATS.map((s) => (
             <Link key={s.label} to={s.to}
@@ -81,12 +76,12 @@ export const DashboardPage: React.FC = () => {
                   <div className="text-[11px] text-[#8e90a6]">5 pre-built workflows</div>
                 </div>
               </Link>
-              <Link to="/designer"
+              <Link to="/workflows"
                 className="flex items-center gap-3 p-3.5 bg-white border border-[#e2e4ef] rounded-xl shadow-sm hover:bg-[#f8f9fc] transition-colors">
                 <BarChart3 size={18} className="text-[#4a8ff7]" />
                 <div>
-                  <div className="text-sm font-semibold text-[#1e1f2e]">Open Designer</div>
-                  <div className="text-[11px] text-[#8e90a6]">Visual process builder</div>
+                  <div className="text-sm font-semibold text-[#1e1f2e]">All Workflows</div>
+                  <div className="text-[11px] text-[#8e90a6]">{WORKFLOWS.length} total workflows</div>
                 </div>
               </Link>
             </div>
@@ -117,8 +112,8 @@ export const DashboardPage: React.FC = () => {
           <div className="col-span-2">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-[#1e1f2e]">Recent Workflows</h3>
-              <Link to="/templates" className="text-xs text-[#7c6cf0] font-medium hover:underline flex items-center gap-1">
-                View all <ArrowRight size={12} />
+              <Link to="/workflows" className="text-xs text-[#7c6cf0] font-medium hover:underline flex items-center gap-1">
+                View all ({WORKFLOWS.length}) <ArrowRight size={12} />
               </Link>
             </div>
             <div className="bg-white rounded-xl border border-[#e2e4ef] shadow-sm overflow-hidden">
@@ -126,32 +121,36 @@ export const DashboardPage: React.FC = () => {
                 <thead>
                   <tr className="border-b border-[#e2e4ef] bg-[#f8f9fc]">
                     <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-[#8e90a6] px-4 py-2.5">Name</th>
-                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-[#8e90a6] px-4 py-2.5">Nodes</th>
+                    <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-[#8e90a6] px-4 py-2.5">Dept</th>
                     <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-[#8e90a6] px-4 py-2.5">Status</th>
                     <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-[#8e90a6] px-4 py-2.5">Updated</th>
                     <th className="px-4 py-2.5"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  {RECENT.map((r, i) => (
-                    <tr key={i}
-                        className="border-b border-[#e2e4ef] last:border-0 hover:bg-[#f8f9fc] transition-colors cursor-pointer"
-                        onClick={() => openWorkflow(r.template)}>
+                  {RECENT.map((r) => (
+                    <tr key={r.id}
+                        className="border-b border-[#e2e4ef] last:border-0 hover:bg-[#f8f9fc] transition-colors cursor-pointer group"
+                        onClick={() => openWorkflow(r)}>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
                           <Workflow size={14} className="text-[#7c6cf0]" />
-                          <span className="text-sm font-medium text-[#1e1f2e]">{r.name}</span>
+                          <span className="text-sm font-medium text-[#1e1f2e] group-hover:text-[#7c6cf0] transition-colors">{r.name}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3 text-sm text-[#5a5c78]">{r.nodes}</td>
+                      <td className="px-4 py-3">
+                        <span className="text-[10px] text-[#5a5c78] bg-[#f5f6fa] px-2 py-0.5 rounded-full border border-[#e2e4ef]">{r.department}</span>
+                      </td>
                       <td className="px-4 py-3">
                         <span className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${
-                          r.status === 'active' ? 'bg-[#e7f8f0] text-[#22a86b]' : 'bg-[#f5f6fa] text-[#8e90a6]'
+                          r.status === 'active' ? 'bg-[#e7f8f0] text-[#22a86b]' :
+                          r.status === 'completed' ? 'bg-[#f0f5ff] text-[#4a8ff7]' :
+                          'bg-[#f5f6fa] text-[#8e90a6]'
                         }`}>{r.status}</span>
                       </td>
-                      <td className="px-4 py-3 text-xs text-[#8e90a6]">{r.updated}</td>
+                      <td className="px-4 py-3 text-xs text-[#8e90a6]">{r.updatedAt}</td>
                       <td className="px-4 py-3">
-                        <span className="text-xs text-[#7c6cf0] hover:underline font-medium">Open →</span>
+                        <span className="text-xs text-[#7c6cf0] font-medium opacity-0 group-hover:opacity-100 transition-opacity">Open →</span>
                       </td>
                     </tr>
                   ))}
