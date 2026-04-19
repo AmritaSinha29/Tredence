@@ -1,14 +1,11 @@
-// ─── Workflow Catalog ─────────────────────────────────────
-// Central source of truth for all saved workflows.
-// Each entry maps to a loadable template in the store.
+import { create } from 'zustand';
 
 export type WorkflowStatus = 'active' | 'completed' | 'draft';
-export type TemplateId = 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review';
 
 export interface SavedWorkflow {
   id: string;
   name: string;
-  template: TemplateId;
+  template: 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review';
   nodes: number;
   edges: number;
   status: WorkflowStatus;
@@ -17,7 +14,7 @@ export interface SavedWorkflow {
   department: string;
 }
 
-export const WORKFLOWS: SavedWorkflow[] = [
+const INITIAL_WORKFLOWS: SavedWorkflow[] = [
   // ─── Active (12) ────────────────────────────────────────
   { id: 'wf-001', name: 'Employee Onboarding — Q2 Batch', template: 'onboarding', nodes: 6, edges: 5, status: 'active', updatedAt: '2 hours ago', createdBy: 'Priya Sharma', department: 'HR' },
   { id: 'wf-002', name: 'Annual Leave Request Flow', template: 'leave-approval', nodes: 7, edges: 6, status: 'active', updatedAt: '5 hours ago', createdBy: 'Arjun Mehta', department: 'HR' },
@@ -50,12 +47,52 @@ export const WORKFLOWS: SavedWorkflow[] = [
   { id: 'wf-025', name: 'New Office Onboarding', template: 'onboarding', nodes: 6, edges: 5, status: 'draft', updatedAt: '1 week ago', createdBy: 'Priya Sharma', department: 'Facilities' },
 ];
 
-export const getWorkflowsByStatus = (status: WorkflowStatus) =>
-  WORKFLOWS.filter((w) => w.status === status);
+interface CatalogState {
+  workflows: SavedWorkflow[];
+  addWorkflow: (wf: Omit<SavedWorkflow, 'id' | 'updatedAt' | 'createdBy' | 'department'>) => void;
+  updateWorkflowStatus: (id: string, status: WorkflowStatus) => void;
+  deleteWorkflow: (id: string) => void;
+  getStats: () => { active: number; completed: number; drafts: number; total: number };
+}
 
-export const STATS = {
-  active: WORKFLOWS.filter((w) => w.status === 'active').length,
-  completed: WORKFLOWS.filter((w) => w.status === 'completed').length,
-  drafts: WORKFLOWS.filter((w) => w.status === 'draft').length,
-  total: WORKFLOWS.length,
-};
+export const useCatalogStore = create<CatalogState>((set, get) => ({
+  workflows: INITIAL_WORKFLOWS,
+  
+  addWorkflow: (wf) => {
+    const newWf: SavedWorkflow = {
+      ...wf,
+      id: `wf-${Math.floor(Math.random() * 10000)}`,
+      updatedAt: 'Just now',
+      createdBy: 'You (Admin)',
+      department: 'HR Operations' // Default
+    };
+    
+    set((state) => ({
+      workflows: [newWf, ...state.workflows]
+    }));
+  },
+  
+  updateWorkflowStatus: (id, status) => {
+    set((state) => ({
+      workflows: state.workflows.map(wf => 
+        wf.id === id ? { ...wf, status, updatedAt: 'Just now' } : wf
+      )
+    }));
+  },
+
+  deleteWorkflow: (id) => {
+    set((state) => ({
+      workflows: state.workflows.filter(wf => wf.id !== id)
+    }));
+  },
+
+  getStats: () => {
+    const { workflows } = get();
+    return {
+      active: workflows.filter((w) => w.status === 'active').length,
+      completed: workflows.filter((w) => w.status === 'completed').length,
+      drafts: workflows.filter((w) => w.status === 'draft').length,
+      total: workflows.length,
+    };
+  }
+}));

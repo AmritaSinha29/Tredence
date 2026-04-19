@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   Undo2, Redo2, Download, Upload, FlaskConical, LayoutGrid,
-  Trash2,
+  Trash2, Save, CheckCircle,
 } from 'lucide-react';
 import { ReactFlowProvider } from 'reactflow';
 import { WorkflowCanvas } from '../components/canvas/WorkflowCanvas';
@@ -9,6 +9,7 @@ import { NodePalette } from '../components/sidebar/NodePalette';
 import { NodeFormPanel } from '../components/forms/NodeFormPanel';
 import { SandboxPanel } from '../components/sandbox/SandboxPanel';
 import { useWorkflowStore } from '../store/workflowStore';
+import { useCatalogStore } from '../store/catalogStore';
 import { useUndoRedo } from '../hooks/useUndoRedo';
 import { useAutoLayout } from '../hooks/useAutoLayout';
 import { exportWorkflowToFile, importWorkflowFromFile } from '../utils/serializer';
@@ -24,6 +25,9 @@ export const DesignerPage: React.FC = () => {
   const importWorkflow = useWorkflowStore((s) => s.importWorkflow);
   const clearWorkflow = useWorkflowStore((s) => s.clearWorkflow);
   const pushSnapshot = useWorkflowStore((s) => s.pushSnapshot);
+  
+  const addWorkflow = useCatalogStore((s) => s.addWorkflow);
+  const [savedStatus, setSavedStatus] = useState(false);
 
   const { undo, redo, canUndo, canRedo } = useUndoRedo();
   const { getLayoutedElements } = useAutoLayout();
@@ -44,6 +48,22 @@ export const DesignerPage: React.FC = () => {
     importWorkflow({ version: '1.0.0', name: '', nodes: ln, edges: le, createdAt: '', updatedAt: '' });
   };
 
+  const handleSave = () => {
+    const startNode = nodes.find(n => n.type === 'start');
+    const name = (startNode?.data as { title?: string })?.title || 'Custom Workflow';
+    
+    addWorkflow({
+      name,
+      template: 'onboarding', // using default layout
+      nodes: nodes.length,
+      edges: edges.length,
+      status: 'draft' // saved as draft by default
+    });
+    
+    setSavedStatus(true);
+    setTimeout(() => setSavedStatus(false), 2000);
+  };
+
   return (
     <ReactFlowProvider>
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -61,11 +81,22 @@ export const DesignerPage: React.FC = () => {
             <Sep />
             <TBtn icon={<Trash2 size={14} />} label="Clear" onClick={clearWorkflow} danger />
           </nav>
-          <button onClick={() => setSandboxOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#7c6cf0] hover:bg-[#6354d4] text-white
-                       rounded-lg text-xs font-semibold transition-colors shadow-sm">
-            <FlaskConical size={13} /> Test Workflow
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={handleSave} disabled={savedStatus}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors shadow-sm border ${
+                savedStatus
+                  ? 'bg-[#e7f8f0] text-[#22a86b] border-[#c5e8d8]'
+                  : 'bg-white text-[#1e1f2e] border-[#e2e4ef] hover:bg-[#f8f9fc]'
+              }`}>
+              {savedStatus ? <CheckCircle size={13} /> : <Save size={13} />}
+              {savedStatus ? 'Saved!' : 'Save Draft'}
+            </button>
+            <button onClick={() => setSandboxOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#7c6cf0] hover:bg-[#6354d4] text-white
+                         rounded-lg text-xs font-semibold transition-colors shadow-sm">
+              <FlaskConical size={13} /> Test Workflow
+            </button>
+          </div>
         </div>
 
         {/* Designer Area */}

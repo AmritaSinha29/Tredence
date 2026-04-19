@@ -6,21 +6,23 @@ import {
   Layers, Activity, CheckCircle, FileEdit,
 } from 'lucide-react';
 import { useWorkflowStore } from '../store/workflowStore';
-import { WORKFLOWS, STATS as DATA_STATS, type SavedWorkflow } from '../data/workflows';
+import { useCatalogStore, type SavedWorkflow } from '../store/catalogStore';
 
-const STATS = [
-  { label: 'Active Workflows', value: String(DATA_STATS.active), icon: Activity, color: '#7c6cf0', bg: '#f5f3fe', to: '/workflows?status=active' },
+const STATS = (stats: { active: number; completed: number; drafts: number; total: number }) => [
+  { label: 'Active Workflows', value: String(stats.active), icon: Activity, color: '#7c6cf0', bg: '#f5f3fe', to: '/workflows?status=active' },
   { label: 'Templates Available', value: '5', icon: Layers, color: '#4a8ff7', bg: '#f0f5ff', to: '/templates' },
-  { label: 'Completed Today', value: String(DATA_STATS.completed), icon: CheckCircle, color: '#22a86b', bg: '#e7f8f0', to: '/workflows?status=completed' },
-  { label: 'Drafts', value: String(DATA_STATS.drafts), icon: FileEdit, color: '#e89e1c', bg: '#fef8eb', to: '/workflows?status=draft' },
+  { label: 'Completed Today', value: String(stats.completed), icon: CheckCircle, color: '#22a86b', bg: '#e7f8f0', to: '/workflows?status=completed' },
+  { label: 'Drafts', value: String(stats.drafts), icon: FileEdit, color: '#e89e1c', bg: '#fef8eb', to: '/workflows?status=draft' },
 ];
-
-// Show latest 6 workflows
-const RECENT = WORKFLOWS.slice(0, 6);
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
   const loadTemplate = useWorkflowStore((s) => s.loadTemplate);
+  const workflows = useCatalogStore((s) => s.workflows);
+  const stats = useCatalogStore((s) => s.getStats());
+
+  const recentWorkflows = workflows.slice(0, 6);
+  const currentStats = STATS(stats);
 
   const openWorkflow = (wf: SavedWorkflow) => {
     loadTemplate(wf.template);
@@ -38,7 +40,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-4 gap-4 mb-8">
-          {STATS.map((s) => (
+          {currentStats.map((s) => (
             <Link key={s.label} to={s.to}
               className="bg-white rounded-xl border border-[#e2e4ef] p-4 flex items-center gap-4 shadow-sm
                          hover:shadow-md hover:border-[#d0d3e4] transition-all cursor-pointer group">
@@ -81,7 +83,7 @@ export const DashboardPage: React.FC = () => {
                 <BarChart3 size={18} className="text-[#4a8ff7]" />
                 <div>
                   <div className="text-sm font-semibold text-[#1e1f2e]">All Workflows</div>
-                  <div className="text-[11px] text-[#8e90a6]">{WORKFLOWS.length} total workflows</div>
+                  <div className="text-[11px] text-[#8e90a6]">{stats.total} total workflows</div>
                 </div>
               </Link>
             </div>
@@ -113,7 +115,7 @@ export const DashboardPage: React.FC = () => {
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-[#1e1f2e]">Recent Workflows</h3>
               <Link to="/workflows" className="text-xs text-[#7c6cf0] font-medium hover:underline flex items-center gap-1">
-                View all ({WORKFLOWS.length}) <ArrowRight size={12} />
+                View all ({stats.total}) <ArrowRight size={12} />
               </Link>
             </div>
             <div className="bg-white rounded-xl border border-[#e2e4ef] shadow-sm overflow-hidden">
@@ -128,7 +130,7 @@ export const DashboardPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {RECENT.map((r) => (
+                  {recentWorkflows.map((r) => (
                     <tr key={r.id}
                         className="border-b border-[#e2e4ef] last:border-0 hover:bg-[#f8f9fc] transition-colors cursor-pointer group"
                         onClick={() => openWorkflow(r)}>

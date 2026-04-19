@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Workflow, Search, Filter, ArrowRight, Users, Calendar } from 'lucide-react';
-import { WORKFLOWS, type WorkflowStatus, type SavedWorkflow } from '../data/workflows';
+import { Workflow, Search, Filter, ArrowRight, Users, Calendar, Trash2, CheckCircle, Play } from 'lucide-react';
+import { useCatalogStore, type WorkflowStatus, type SavedWorkflow } from '../store/catalogStore';
 import { useWorkflowStore } from '../store/workflowStore';
 
-const STATUS_TABS: { key: WorkflowStatus | 'all'; label: string; count: number }[] = [
-  { key: 'all', label: 'All', count: WORKFLOWS.length },
-  { key: 'active', label: 'Active', count: WORKFLOWS.filter((w) => w.status === 'active').length },
-  { key: 'completed', label: 'Completed', count: WORKFLOWS.filter((w) => w.status === 'completed').length },
-  { key: 'draft', label: 'Drafts', count: WORKFLOWS.filter((w) => w.status === 'draft').length },
+const STATUS_TABS: { key: WorkflowStatus | 'all'; label: string }[] = [
+  { key: 'all', label: 'All' },
+  { key: 'active', label: 'Active' },
+  { key: 'completed', label: 'Completed' },
+  { key: 'draft', label: 'Drafts' },
 ];
 
 const STATUS_STYLES: Record<WorkflowStatus, string> = {
@@ -25,8 +25,19 @@ export const WorkflowsPage: React.FC = () => {
   const [filter, setFilter] = useState<WorkflowStatus | 'all'>(initialFilter);
   const [search, setSearch] = useState('');
   const loadTemplate = useWorkflowStore((s) => s.loadTemplate);
+  const workflows = useCatalogStore((s) => s.workflows);
+  const stats = useCatalogStore((s) => s.getStats());
+  const updateStatus = useCatalogStore((s) => s.updateWorkflowStatus);
+  const deleteWorkflow = useCatalogStore((s) => s.deleteWorkflow);
 
-  const filtered = WORKFLOWS.filter((w) => {
+  const getTabCount = (key: WorkflowStatus | 'all') => {
+    if (key === 'all') return stats.total;
+    if (key === 'active') return stats.active;
+    if (key === 'completed') return stats.completed;
+    return stats.drafts;
+  };
+
+  const filtered = workflows.filter((w) => {
     if (filter !== 'all' && w.status !== filter) return false;
     if (search && !w.name.toLowerCase().includes(search.toLowerCase()) &&
         !w.department.toLowerCase().includes(search.toLowerCase()) &&
@@ -46,7 +57,7 @@ export const WorkflowsPage: React.FC = () => {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-2xl font-bold text-[#1e1f2e]">All Workflows</h2>
-            <p className="text-sm text-[#8e90a6] mt-1">{WORKFLOWS.length} workflows across your organization</p>
+            <p className="text-sm text-[#8e90a6] mt-1">{stats.total} workflows across your organization</p>
           </div>
           <button onClick={() => navigate('/designer')}
             className="flex items-center gap-2 px-4 py-2.5 bg-[#7c6cf0] hover:bg-[#6354d4] text-white
@@ -68,7 +79,7 @@ export const WorkflowsPage: React.FC = () => {
                 }`}>
                 {tab.label}
                 <span className={`ml-1.5 text-[10px] ${filter === tab.key ? 'text-white/70' : 'text-[#b4b6c8]'}`}>
-                  {tab.count}
+                  {getTabCount(tab.key)}
                 </span>
               </button>
             ))}
@@ -144,9 +155,32 @@ export const WorkflowsPage: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-xs text-[#7c6cf0] font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-                        Open <ArrowRight size={11} />
-                      </span>
+                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onClick={(e) => { e.stopPropagation(); openWorkflow(wf); }}
+                          className="flex items-center gap-1 text-xs text-[#7c6cf0] font-medium hover:underline mr-2">
+                          Open <ArrowRight size={11} />
+                        </button>
+                        
+                        {wf.status === 'draft' && (
+                          <button onClick={(e) => { e.stopPropagation(); updateStatus(wf.id, 'active'); }}
+                            title="Activate"
+                            className="p-1.5 text-[#8e90a6] hover:text-[#22a86b] hover:bg-[#e7f8f0] rounded transition-colors">
+                            <Play size={14} />
+                          </button>
+                        )}
+                        {wf.status === 'active' && (
+                          <button onClick={(e) => { e.stopPropagation(); updateStatus(wf.id, 'completed'); }}
+                            title="Mark Completed"
+                            className="p-1.5 text-[#8e90a6] hover:text-[#4a8ff7] hover:bg-[#f0f5ff] rounded transition-colors">
+                            <CheckCircle size={14} />
+                          </button>
+                        )}
+                        <button onClick={(e) => { e.stopPropagation(); deleteWorkflow(wf.id); }}
+                          title="Delete"
+                          className="p-1.5 text-[#8e90a6] hover:text-[#e04e5e] hover:bg-[#fef0f1] rounded transition-colors">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -157,7 +191,7 @@ export const WorkflowsPage: React.FC = () => {
 
         {/* Summary */}
         <p className="text-[10px] text-[#b4b6c8] text-center mt-3">
-          Showing {filtered.length} of {WORKFLOWS.length} workflows
+          Showing {filtered.length} of {stats.total} workflows
         </p>
       </div>
     </div>

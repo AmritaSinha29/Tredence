@@ -3,6 +3,7 @@ import { Play, ShieldCheck, X, Loader2, CheckCircle, XCircle, AlertTriangle } fr
 import { useWorkflowStore } from '../../store/workflowStore';
 import { useValidation } from '../../hooks/useValidation';
 import { simulateWorkflow } from '../../api/mockApi';
+import { useCatalogStore } from '../../store/catalogStore';
 import { type ValidationResult, type SimulationResult } from '../../types';
 import { ExecutionTimeline } from './ExecutionTimeline';
 
@@ -17,6 +18,9 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
   const [simulation, setSimulation] = useState<SimulationResult | null>(null);
   const [simulating, setSimulating] = useState(false);
   const [tab, setTab] = useState<'validate' | 'simulate'>('validate');
+  const [activated, setActivated] = useState(false);
+  
+  const addWorkflow = useCatalogStore((s) => s.addWorkflow);
 
   if (!isOpen) return null;
 
@@ -35,6 +39,27 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
       setSimulation(r);
     } catch { /* handled */ }
     finally { setSimulating(false); }
+  };
+
+  const handleActivate = () => {
+    // Generate a default name from the Start node if available
+    const startNode = nodes.find(n => n.type === 'start');
+    const name = (startNode?.data as { title?: string })?.title || 'Custom Workflow';
+    
+    // Add to catalog
+    addWorkflow({
+      name,
+      template: 'onboarding', // using default template layout for custom ones
+      nodes: nodes.length,
+      edges: edges.length,
+      status: 'active'
+    });
+    
+    setActivated(true);
+    setTimeout(() => {
+      onClose();
+      setActivated(false);
+    }, 2000);
   };
 
   return (
@@ -142,10 +167,27 @@ export const SandboxPanel: React.FC<Props> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-2.5 border-t border-[#e2e4ef] bg-[#f8f9fc]">
-          <p className="text-[10px] text-[#b4b6c8] text-center">
+        <div className="px-5 py-3 border-t border-[#e2e4ef] bg-[#f8f9fc] flex items-center justify-between">
+          <p className="text-[10px] text-[#b4b6c8]">
             {nodes.length} node{nodes.length !== 1 ? 's' : ''} · {edges.length} edge{edges.length !== 1 ? 's' : ''}
           </p>
+          
+          {(validation?.isValid || simulation?.status === 'completed') && (
+            <button 
+              onClick={handleActivate}
+              disabled={activated}
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activated 
+                  ? 'bg-[#e7f8f0] text-[#22a86b] border border-[#c5e8d8]' 
+                  : 'bg-[#7c6cf0] text-white hover:bg-[#6354d4] shadow-sm'
+              }`}>
+              {activated ? (
+                <><CheckCircle size={14} /> Activated!</>
+              ) : (
+                <><Play size={14} /> Activate Workflow</>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
