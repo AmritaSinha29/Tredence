@@ -55,7 +55,7 @@ interface WorkflowState {
   clearWorkflow: () => void;
 
   // Templates
-  loadTemplate: (template: 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review') => void;
+  loadTemplate: (template: 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review' | 'equipment-request') => void;
 
   // Helpers
   getSelectedNode: () => WorkflowNode | undefined;
@@ -282,6 +282,28 @@ export const useWorkflowStore = create<WorkflowState>((set, get) => ({
         { id: 'dv_e2', source: 'dv_auto1', target: 'dv_task1', animated: true, style: edgeStyle },
         { id: 'dv_e3', source: 'dv_task1', target: 'dv_approval1', animated: true, style: edgeStyle },
         { id: 'dv_e4', source: 'dv_approval1', target: 'dv_end', animated: true, style: edgeStyle },
+      ];
+      set({ nodes, edges, selectedNodeId: null, redoStack: [] });
+    }
+
+    if (template === 'equipment-request') {
+      const edgeStyle = { stroke: '#0F3D4C', strokeWidth: 2 };
+      const nodes: WorkflowNode[] = [
+        { id: 'eq_start', type: 'start', position: { x: 250, y: 0 }, data: { type: 'start', label: 'Start', title: 'Equipment Request', metadata: { category: 'IT' } } },
+        { id: 'eq_task1', type: 'task', position: { x: 250, y: 120 }, data: { type: 'task', label: 'Task', title: 'Manager Approval', description: 'Review equipment request', assignee: 'Manager', dueDate: '', customFields: {} } },
+        { id: 'eq_cond1', type: 'condition', position: { x: 250, y: 240 }, data: { type: 'condition', label: 'Condition', title: 'Is Employee Remote?', variable: 'work_location', operator: 'equals', value: 'remote' } },
+        { id: 'eq_auto_true', type: 'automated', position: { x: 100, y: 380 }, data: { type: 'automated', label: 'Automated Step', title: 'Ship via FedEx', actionId: 'generate_report', actionParams: { format: 'pdf' } } },
+        { id: 'eq_auto_false', type: 'automated', position: { x: 400, y: 380 }, data: { type: 'automated', label: 'Automated Step', title: 'Ready for Desk Pickup', actionId: 'send_email', actionParams: { to: 'employee', subject: 'Equipment Ready' } } },
+        { id: 'eq_end1', type: 'end', position: { x: 100, y: 500 }, data: { type: 'end', label: 'End', endMessage: 'Equipment Shipped', showSummary: true } },
+        { id: 'eq_end2', type: 'end', position: { x: 400, y: 500 }, data: { type: 'end', label: 'End', endMessage: 'Equipment Ready', showSummary: true } },
+      ];
+      const edges: WorkflowEdge[] = [
+        { id: 'eq_e1', source: 'eq_start', target: 'eq_task1', animated: true, style: edgeStyle },
+        { id: 'eq_e2', source: 'eq_task1', target: 'eq_cond1', animated: true, style: edgeStyle },
+        { id: 'eq_e3_true', source: 'eq_cond1', sourceHandle: 'true', target: 'eq_auto_true', animated: true, style: { stroke: '#22a86b', strokeWidth: 2 } },
+        { id: 'eq_e4_false', source: 'eq_cond1', sourceHandle: 'false', target: 'eq_auto_false', animated: true, style: { stroke: '#e04e5e', strokeWidth: 2 } },
+        { id: 'eq_e5', source: 'eq_auto_true', target: 'eq_end1', animated: true, style: edgeStyle },
+        { id: 'eq_e6', source: 'eq_auto_false', target: 'eq_end2', animated: true, style: edgeStyle },
       ];
       set({ nodes, edges, selectedNodeId: null, redoStack: [] });
     }

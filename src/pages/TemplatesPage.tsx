@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  ArrowRight, Users, CalendarDays, FileCheck, LogOut, Award,
+  ArrowRight, Users, CalendarDays, FileCheck, LogOut, Award, Laptop,
 } from 'lucide-react';
 import { useWorkflowStore } from '../store/workflowStore';
 
-type TemplateId = 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review';
+type TemplateId = 'onboarding' | 'leave-approval' | 'doc-verification' | 'exit-process' | 'performance-review' | 'equipment-request';
 
 interface Template {
   id: TemplateId;
@@ -73,6 +73,16 @@ const MORE_TEMPLATES: Template[] = [
     nodes: 7, edges: 6,
     tags: ['HR', 'Performance'],
     steps: ['Self Assessment', 'Peer Feedback', 'Manager Rating', 'Calibration', 'Generate Report', 'Complete'],
+  },
+  {
+    id: 'equipment-request',
+    name: 'Remote Equipment Request',
+    description: 'IT provisioning flow with conditional logic to ship to remote workers or prepare for office pickup.',
+    icon: <Laptop size={22} />,
+    iconColor: '#8e90a6', iconBg: '#f5f6fa',
+    nodes: 7, edges: 6,
+    tags: ['IT', 'Equipment', 'Conditional'],
+    steps: ['Request', 'Approval', 'Check Location', 'Ship / Pickup', 'Complete'],
   },
 ];
 
@@ -151,7 +161,7 @@ export const TemplatesPage: React.FC = () => {
         <h3 className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8e90a6] mb-3">
           More Templates
         </h3>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {MORE_TEMPLATES.map((t) => (
             <div key={t.id} className="bg-white rounded-md border border-[#e2e4ef] shadow-sm p-4 hover:shadow-md transition-shadow">
               <div className="flex items-center gap-3 mb-3">

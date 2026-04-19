@@ -122,7 +122,7 @@ src/
 
 | # | Feature | Status |
 |---|---------|--------|
-| 1 | **Workflow Canvas** — Drag-and-drop with 5 custom node types | ✅ |
+| 1 | **Workflow Canvas** — Drag-and-drop with 6 custom node types | ✅ |
 | 2 | **Node Configuration Forms** — Type-specific sliding panel with all required fields | ✅ |
 | 3 | **Mock API Layer** — `GET /automations` + `POST /simulate` with latency simulation | ✅ |
 | 4 | **Sandbox Panel** — Validation + simulation with step-by-step execution timeline | ✅ |
@@ -135,6 +135,7 @@ src/
 | **Start** | Title, Metadata key-value pairs |
 | **Task** | Title (required), Description, Assignee, Due Date, Custom Fields |
 | **Approval** | Title, Approver Role (dropdown + custom), Auto-approve Threshold |
+| **Condition** | Variable Name, Logic Operator (>, <, ==, !=, contains), Target Value. Routes via True/False handles. |
 | **Automated Step** | Title, Action (fetched from API), Dynamic Parameters |
 | **End** | End Message, Summary Toggle |
 
@@ -145,6 +146,7 @@ src/
 | Employee Onboarding | 6 | Document collection → Manager approval → Welcome email → IT setup |
 | Leave Approval | 7 | Submit → Manager review → HR verification → Update balance → Notify team |
 | Document Verification | 5 | OCR scan → Manual review → Compliance sign-off |
+| Remote Equipment Request | 7 | Submit → Condition (Is Remote?) → True (Ship laptop) / False (Pickup at desk) → End |
 | Exit Process | 8 | Asset return → Knowledge transfer → Exit interview → Settlement → Revoke access |
 | Performance Review | 7 | Self assessment → Peer feedback → Manager rating → Calibration → Report |
 
@@ -178,7 +180,6 @@ src/
 
 ## 🔮 What I'd Add With More Time
 
-- **Conditional branching** — Decision nodes with true/false edges
 - **Collaborative editing** — WebSocket-based real-time collaboration
 - **Backend persistence** — Connect mock API to PostgreSQL/Supabase
 - **E2E tests** — Cypress/Playwright for full workflow creation flows
